@@ -1,0 +1,1 @@
+This folder contains the user application. The application is stored in flash sector 2.
