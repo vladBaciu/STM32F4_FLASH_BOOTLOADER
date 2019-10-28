@@ -484,21 +484,75 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void printmsg(char *format,...)
+
+/*****************************************COMMENT FUNCTION TEMPLATE*******************************************************/
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+
+/*************************************************************************************************************************/
+
+/*
+*
+* \brief  Prints a message over the USART3 debug loader interface.
+*	\param  puc8Format: message format
+* \param	... : arguments 
+* \return	-
+*
+*/
+
+void printmsg(char *puc8Format,...)
 {
 	
-	char c_str[80];
+	char ucStr[80];
 	
-	va_list t_args;
-	va_start(t_args, format);
-	vsprintf(str, format, t_args);
-	HAL_UART_Transmit(UART_CHANNEL_DEBUG_INTERFACE, (uint8_t *) c_str,strlen(c_str),HAL_MAX_DELAY);
-	va_end(t_args);
+	va_list tArgs;
+	va_start(tArgs, puc8Format);
+	vsprintf(ucStr, puc8Format, tArgs);
+	HAL_UART_Transmit(UART_CHANNEL_DEBUG_INTERFACE, (uint8_t *) ucStr,strlen(ucStr),HAL_MAX_DELAY);
+	va_end(tArgs);
 	
 }
 
 
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
 
+void FBL_jump_to_user_application(void)
+{
+	/* Declare void pointer function for user application reset handler */
+	void (*pvAppResetHandler)(void);
+	
+	printmsg ("FBL_DEBUG_MSG: FBL_jump_to_user_application");
+	
+	/* Store user application MSP from flash sector 2) */
+	
+	uint32_t ulMainStackPointer = * (volatile uint32_t *) FLASH_SECTOR2_BASE_ADDRESS;
+	
+	/* Set user application MSP */
+	__set_MSP(ulMainStackPointer);
+	
+	/* Store user application Reset Handler address from flash sector 2) */
+	uint32_t ulResetHandlerAddr = * (volatile uint32_t *) FLASH_SECTOR2_BASE_ADDRESS + 4;
+	
+	
+	pvAppResetHandler = (void *) ulResetHandlerAddr;
+	
+	/* Jump to Reset Handler  of user application */
+	
+	pvAppResetHandler();
+		
+}
 
 
 

@@ -74,6 +74,7 @@ static void MX_USB_OTG_FS_HCD_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void printmsg(char *format,...);
+void FBL_jump_to_user_application(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -131,7 +132,7 @@ int main(void)
 		printmsg("ABCD\n");
 		uint32_t ul32CurrentTickValue = HAL_GetTick();
 		while ( HAL_GetTick() <= (ul32CurrentTickValue + 500));
-		
+		FBL_jump_to_user_application();
 		
 		
   }
@@ -543,7 +544,7 @@ void FBL_jump_to_user_application(void)
 	__set_MSP(ulMainStackPointer);
 	
 	/* Store user application Reset Handler address from flash sector 2) */
-	uint32_t ulResetHandlerAddr = * (volatile uint32_t *) FLASH_SECTOR2_BASE_ADDRESS + 4;
+	uint32_t ulResetHandlerAddr = * (volatile uint32_t *) (FLASH_SECTOR2_BASE_ADDRESS + 4);
 	
 	
 	pvAppResetHandler = (void *) ulResetHandlerAddr;
