@@ -38,8 +38,8 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define BL_DEBUG_MSG_EN	
-
+#define FBL_DEBUG_MSG_EN	
+#define	FBL_UART_RX_LEN					(200U)
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -56,9 +56,9 @@ HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 
-#define UART_CHANNEL_DEBUG_INTERFACE				(&huart3)
+#define FBL_UART_CHANNEL_DEBUG_INTERFACE				(&huart3)
 
-
+uint8_t auc8UartRxBuffer[FBL_UART_RX_LEN];
 
 
 /* USER CODE END PV */
@@ -73,8 +73,8 @@ static void MX_USART2_UART_Init(void);
 static void MX_USB_OTG_FS_HCD_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
-static void printmsg(char *format,...);
-void FBL_jump_to_user_application(void);
+static void FBL_vPrintMsg(char *format,...);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -129,10 +129,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		
-		printmsg("ABCD\n");
+		FBL_vPrintMsg("ABCD\n");
 		uint32_t ul32CurrentTickValue = HAL_GetTick();
 		while ( HAL_GetTick() <= (ul32CurrentTickValue + 500));
-		FBL_jump_to_user_application();
+		FBL_vJumpToUserApplication();
 		
 		
   }
@@ -507,7 +507,7 @@ static void MX_GPIO_Init(void)
 *
 */
 
-void printmsg(char *puc8Format,...)
+void FBL_vPrintMsg(char *puc8Format,...)
 {
 	
 	char ucStr[80];
@@ -515,7 +515,7 @@ void printmsg(char *puc8Format,...)
 	va_list tArgs;
 	va_start(tArgs, puc8Format);
 	vsprintf(ucStr, puc8Format, tArgs);
-	HAL_UART_Transmit(UART_CHANNEL_DEBUG_INTERFACE, (uint8_t *) ucStr,strlen(ucStr),HAL_MAX_DELAY);
+	HAL_UART_Transmit(FBL_UART_CHANNEL_DEBUG_INTERFACE, (uint8_t *) ucStr,strlen(ucStr),HAL_MAX_DELAY);
 	va_end(tArgs);
 	
 }
@@ -523,18 +523,18 @@ void printmsg(char *puc8Format,...)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief 	Jumps to user application. User application is stored in sector 2, start address is 0x8008000
+*	\param 	void
+* \return	void. Prints a message on the debug interface.
 *
 */
 
-void FBL_jump_to_user_application(void)
+void FBL_vJumpToUserApplication(void)
 {
 	/* Declare void pointer function for user application reset handler */
 	void (*pvAppResetHandler)(void);
 	
-	printmsg ("FBL_DEBUG_MSG: FBL_jump_to_user_application");
+	FBL_vPrintMsg ("FBL_DEBUG_MSG: FBL_vJumpToUserApplication");
 	
 	/* Store user application MSP from flash sector 2) */
 	
@@ -556,6 +556,81 @@ void FBL_jump_to_user_application(void)
 }
 
 
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+	
+}
+
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+void FBL_vUartReadData(void)
+{
+	uint8_t uc8RxLength = 0;
+	
+	while(1)
+	{
+		memset(auc8UartRxBuffer,0,FBL_UART_RX_LEN);
+		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,auc8UartRxBuffer,1,HAL_MAX_DELAY);
+		uc8RxLength = auc8UartRxBuffer[0];
+		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,&auc8UartRxBuffer[1],uc8RxLength,HAL_MAX_DELAY);
+		switch (auc8UartRxBuffer[1])
+		{
+				case FBL_GET_VER:
+						FBL_vGetVersion_Cmd(auc8UartRxBuffer);
+						break;
+				case FBL_GET_HELP:
+					
+						break;
+				case FBL_GET_CID:
+					
+						break;
+				case FBL_GET_RDP_STATUS:
+			
+						break;
+				case FBL_GO_TO_ADDR:
+					
+						break;
+				case FBL_FLASH_ERASE:
+			
+						break;
+				case FBL_MEM_WRITE:
+			
+						break;
+				case FBL_EN_RW_PROTECT:
+				
+						break;
+				case FBL_MEM_READ:
+				
+						break;
+				case FBL_READ_SECTOR_P_STATUS:
+				
+						break;
+				case FBL_OTP_READ:
+				
+						break;
+				case FBL_DIS_R_W_PROTECT:
+			
+						break;
+				 default:
+						FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+						break;
+		}
+	}
+}
 
 
 
