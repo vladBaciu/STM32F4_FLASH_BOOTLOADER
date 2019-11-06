@@ -40,6 +40,11 @@
 /* USER CODE BEGIN PM */
 #define FBL_DEBUG_MSG_EN	
 #define	FBL_UART_RX_LEN					(200U)
+
+/* Define length response for each command */
+#define FBL_GET_VERSION_LENGTH					(1U)
+
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,6 +79,7 @@ static void MX_USB_OTG_FS_HCD_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void FBL_vPrintMsg(char *format,...);
+
 
 /* USER CODE END PFP */
 
@@ -132,8 +138,8 @@ int main(void)
 		FBL_vPrintMsg("ABCD\n");
 		uint32_t ul32CurrentTickValue = HAL_GetTick();
 		while ( HAL_GetTick() <= (ul32CurrentTickValue + 500));
-		FBL_vJumpToUserApplication();
-		
+		//FBL_vJumpToUserApplication();
+		FBL_vUartReadData();
 		
   }
   /* USER CODE END 3 */
@@ -563,11 +569,106 @@ void FBL_vJumpToUserApplication(void)
 * \return	
 *
 */
-void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
+
+/*****************************************START DECLARE COMMON FUNCTIONS *******************************************************/
+
+void FBL_vSendAck(uint8_t ucLengthResponse)
 {
-	
+	uint8_t aucAck[2];
+	aucAck[0] = FBL_ACK_VALUE;
+	aucAck[1] = ucLengthResponse;
+	HAL_UART_Transmit(FBL_UART_CHANNEL_DEBUG_INTERFACE, aucAck , 2, HAL_MAX_DELAY);
+}
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+
+void FBL_vSendNack(void)
+{
+	uint8_t ucNack = FBL_NACK_VALUE;
+	HAL_UART_Transmit(FBL_UART_CHANNEL_DEBUG_INTERFACE, &ucNack , 1, HAL_MAX_DELAY);
 	
 }
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+
+uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
+{
+	uint32_t ulCRCValue = 0xFF;
+	uint8_t  ucReturnValue = FBL_CRC_FAIL;
+	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
+	{
+		ulCRCValue = HAL_CRC_Accumulate(&hcrc,(uint32_t *)(pucData + ulI),1);
+	}
+	
+	if (ulCRCValue == ulCRCHost)
+	{
+		ucReturnValue = FBL_CRC_SUCCESS;
+		
+	}
+	
+	return ucReturnValue;
+}
+
+void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength)
+{
+	HAL_UART_Transmit(FBL_UART_CHANNEL_DEBUG_INTERFACE,pucBuffer,ulLength,HAL_MAX_DELAY);
+}
+
+/*****************************************STOP DECLARE COMMON FUNCTIONS *******************************************************/
+
+
+
+/*****************************************START DECLARE GETVERS FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+uint8_t FBL_ucGetBootloaderVersion(void)
+{
+	return FBL_VERSION;
+}
+
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
+{
+	uint8_t ucVersion;
+	uint32_t ulLength = puc8RxBuffer[0] + 1;
+	uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + 2));
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		FBL_vSendAck(FBL_GET_VERSION_LENGTH);
+		ucVersion = FBL_ucGetBootloaderVersion();
+		FBL_vUartWriteData(&ucVersion,1);
+  }
+	else
+	{
+		FBL_vSendNack();
+	}
+	
+}
+/*****************************************STOP DECLARE GETVERS FUNCTIONS *******************************************************/
 
 
 /*

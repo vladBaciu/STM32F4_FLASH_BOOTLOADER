@@ -4,6 +4,7 @@
   * @file           : main.h
   * @brief          : Header for main.c file.
   *                   This file contains the common defines of the application.
+	* @autor					: Vlad-Eusebiu Baciu
   ******************************************************************************
   * @attention
   *
@@ -47,7 +48,16 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define FLASH_SECTOR2_BASE_ADDRESS 0x08008000U
+
+
+#define FLASH_SECTOR2_BASE_ADDRESS (0x08008000U)
+#define FBL_ACK_VALUE 						 (0xA0)
+#define FBL_NACK_VALUE 						 (0xE0)
+#define FBL_CRC_FAIL							 (0xC0)
+#define FBL_CRC_SUCCESS						 (0xB0)
+
+#define FBL_VERSION								 (0xAA)
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -58,11 +68,17 @@ void Error_Handler(void);
 void FBL_vJumpToUserApplication(void);
 
 void FBL_vUartReadData(void);
-
 void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
 
+void FBL_vSendAck(uint8_t ucLengthResponse);
+void FBL_vSendNack(void);
+
+
+uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost);
+uint8_t FBL_ucGetBootloaderVersion(void);
+void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

@@ -30,11 +30,11 @@ Build target 'Custom bootloader'
 compiling stm32f4xx_it.c...
 compiling stm32f4xx_hal_msp.c...
 compiling main.c...
-../Src/main.c(121): warning:  #177-D: variable "somedata"  was declared but never referenced
+../Src/main.c(127): warning:  #177-D: variable "somedata"  was declared but never referenced
   	char somedata[] = "Hello from the bootloader";
-../Src/main.c(517): warning:  #223-D: function "vsprintf" declared implicitly
+../Src/main.c(523): warning:  #223-D: function "vsprintf" declared implicitly
   	vsprintf(ucStr, puc8Format, tArgs);
-../Src/main.c(550): warning:  #513-D: a value of type "void *" cannot be assigned to an entity of type "void (*)(void)"
+../Src/main.c(556): warning:  #513-D: a value of type "void *" cannot be assigned to an entity of type "void (*)(void)"
   	pvAppResetHandler = (void *) ulResetHandlerAddr;
 ../Src/main.c: 3 warnings, 0 errors
 linking...
