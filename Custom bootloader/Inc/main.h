@@ -50,13 +50,8 @@ extern "C" {
 /* USER CODE BEGIN EM */
 
 
-#define FLASH_SECTOR2_BASE_ADDRESS (0x08008000U)
-#define FBL_ACK_VALUE 						 (0xA0)
-#define FBL_NACK_VALUE 						 (0xE0)
-#define FBL_CRC_FAIL							 (0xC0)
-#define FBL_CRC_SUCCESS						 (0xB0)
 
-#define FBL_VERSION								 (0xAA)
+
 
 /* USER CODE END EM */
 
@@ -186,6 +181,13 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 /*This command is used disable all sector read/write protection */
 #define FBL_DIS_R_W_PROTECT				(0x5C)
 
+#define FLASH_SECTOR2_BASE_ADDRESS (0x08008000U)
+#define FBL_ACK_VALUE 						 (0xA5)
+#define FBL_NACK_VALUE 						 (0x7F)
+#define FBL_CRC_FAIL							 (0xC0)
+#define FBL_CRC_SUCCESS						 (0xB0)
+
+#define FBL_VERSION								 (0xAA)
 
 /* USER CODE END Private defines */
 

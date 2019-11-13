@@ -59,12 +59,24 @@ UART_HandleTypeDef huart3;
 
 HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
+
+
 /* USER CODE BEGIN PV */
+
 
 #define FBL_UART_CHANNEL_DEBUG_INTERFACE				(&huart3)
 
 uint8_t auc8UartRxBuffer[FBL_UART_RX_LEN];
 
+uint8_t aucSupportedCommands[] = {
+                               FBL_GET_VER ,
+                               FBL_GET_HELP,
+                               FBL_GET_CID,
+                               FBL_GET_RDP_STATUS,
+                               FBL_GO_TO_ADDR,
+                               FBL_FLASH_ERASE,
+                               FBL_MEM_WRITE,
+                               FBL_READ_SECTOR_P_STATUS} ;
 
 /* USER CODE END PV */
 
@@ -139,6 +151,8 @@ int main(void)
 		uint32_t ul32CurrentTickValue = HAL_GetTick();
 		while ( HAL_GetTick() <= (ul32CurrentTickValue + 500));
 		//FBL_vJumpToUserApplication();
+		
+
 		FBL_vUartReadData();
 		
   }
@@ -605,10 +619,12 @@ void FBL_vSendNack(void)
 uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 {
 	uint32_t ulCRCValue = 0xFF;
+	uint32_t ulData;
 	uint8_t  ucReturnValue = FBL_CRC_FAIL;
 	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
 	{
-		ulCRCValue = HAL_CRC_Accumulate(&hcrc,(uint32_t *)(pucData + ulI),1);
+		ulData = pucData[ulI];
+		ulCRCValue = HAL_CRC_Accumulate(&hcrc,&ulData,1);
 	}
 	
 	if (ulCRCValue == ulCRCHost)
@@ -655,7 +671,7 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
 {
 	uint8_t ucVersion;
 	uint32_t ulLength = puc8RxBuffer[0] + 1;
-	uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + 2));
+	uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
 	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	{
 		FBL_vSendAck(FBL_GET_VERSION_LENGTH);
@@ -670,6 +686,36 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
 }
 /*****************************************STOP DECLARE GETVERS FUNCTIONS *******************************************************/
 
+/*****************************************START DECLARE GETHELP FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+
+
+
+void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer)
+{
+	 uint32_t ulLength = puc8RxBuffer[0] + 1;
+	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
+	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	 {
+		FBL_vSendAck(sizeof(aucSupportedCommands));
+	 	FBL_vUartWriteData(aucSupportedCommands,sizeof(aucSupportedCommands));
+	 }
+	 else
+	 {
+		FBL_vSendNack();
+	 }
+}
+
+
+
+/*****************************************STOP DECLARE GETVERS FUNCTIONS *******************************************************/
 
 /*
 *
@@ -680,21 +726,24 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
 */
 void FBL_vUartReadData(void)
 {
-	uint8_t uc8RxLength = 0;
 	
 	while(1)
 	{
+		/* Print debug message */
+		FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+		/* Prepare buffer to receive data */
 		memset(auc8UartRxBuffer,0,FBL_UART_RX_LEN);
+		/* Wait for first byte. Fist byte represents the length of the command */
 		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,auc8UartRxBuffer,1,HAL_MAX_DELAY);
-		uc8RxLength = auc8UartRxBuffer[0];
-		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,&auc8UartRxBuffer[1],uc8RxLength,HAL_MAX_DELAY);
+		/* Wait for the following bytes - command, parameters (or not) and CRC value */ 
+		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,&auc8UartRxBuffer[1],*auc8UartRxBuffer,HAL_MAX_DELAY);
 		switch (auc8UartRxBuffer[1])
 		{
 				case FBL_GET_VER:
-						FBL_vGetVersion_Cmd(auc8UartRxBuffer);
+				FBL_vGetVersion_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_GET_HELP:
-					
+			  FBL_vGetHelp_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_GET_CID:
 					
