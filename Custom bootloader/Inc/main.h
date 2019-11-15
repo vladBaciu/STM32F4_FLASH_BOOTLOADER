@@ -71,7 +71,7 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
-
+void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer);
 
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);

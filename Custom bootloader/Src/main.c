@@ -847,6 +847,23 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************STOP DECLARE GETRDP FUNCTIONS *******************************************************/
 
+/*****************************************START DECLARE GOTOADDRESS FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+}
+
+
+/*****************************************STOP DECLARE GOTOADDRESS FUNCTIONS *******************************************************/
+
 /*
 *
 * \brief 
@@ -880,10 +897,9 @@ void FBL_vUartReadData(void)
 						break;
 				case FBL_GET_RDP_STATUS:
 			  FBL_vGetRDP_Cmd(auc8UartRxBuffer);
-
 						break;
 				case FBL_GO_TO_ADDR:
-					
+				FBL_vGoToAddress_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_FLASH_ERASE:
 			
