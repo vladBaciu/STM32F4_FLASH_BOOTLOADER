@@ -49,7 +49,11 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
+#define FBL_CRC_CUSTOM 							(0U)	
+#define FBL_CRC_HAL									(1U)
+#define FBL_CRC_POLYNOME				    (0xCB)
 
+#define FBL_CRC_VERIFY_VERSION			FBL_CUSTOM_CRC
 
 
 
@@ -66,6 +70,8 @@ void FBL_vUartReadData(void);
 void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
+
 
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);

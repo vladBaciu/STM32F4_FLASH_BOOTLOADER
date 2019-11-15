@@ -42,9 +42,9 @@
 #define	FBL_UART_RX_LEN					(200U)
 
 /* Define length response for each command */
-#define FBL_GET_VERSION_LENGTH					(1U)
-
-
+#define FBL_GET_VERSION_ANSWER_LENGTH					(1U)
+#define FBL_GET_CID_ANSWER_LENGTH							(2U)
+#define FBL_GET_RDP_ANSWER_LENGTH							(1U)
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -91,8 +91,8 @@ static void MX_USB_OTG_FS_HCD_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void FBL_vPrintMsg(char *format,...);
-
-
+uint16_t FBL_Get_Mcu_ID(void);
+uint8_t FBL_Get_RDP(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -618,9 +618,13 @@ void FBL_vSendNack(void)
 
 uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 {
+	
+	  uint8_t  ucReturnValue = FBL_CRC_FAIL;
+	
+#if (FBL_CRC_VERIFY_VERSION == FBL_CRC_HAL)
+	
 	uint32_t ulCRCValue = 0xFF;
 	uint32_t ulData;
-	uint8_t  ucReturnValue = FBL_CRC_FAIL;
 	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
 	{
 		ulData = pucData[ulI];
@@ -632,8 +636,37 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 		ucReturnValue = FBL_CRC_SUCCESS;
 		
 	}
-	
+
 	return ucReturnValue;
+#elseif
+	uint32_t ulCRCValue = 0xFFFFFFFF;
+
+	
+
+	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
+	{
+			ulCRCValue = ulCRCValue ^ pucData[ulI];
+
+			for (uint32_t ulI = 0; ulI < 8; ulI++)
+			{
+				if( (ulCRCValue >> 7) & 1)
+				{
+					ulCRCValue ^= FBL_CRC_POLYNOME;
+				}
+					ulCRCValue = (ulCRCValue << 1);
+			}
+	}
+	
+	if (ulCRCValue == ulCRCHost)
+	{
+		ucReturnValue = FBL_CRC_SUCCESS;
+		
+	}
+
+
+	
+#endif
+		return ucReturnValue;
 }
 
 void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength)
@@ -674,7 +707,7 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
 	uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
 	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	{
-		FBL_vSendAck(FBL_GET_VERSION_LENGTH);
+		FBL_vSendAck(FBL_GET_VERSION_ANSWER_LENGTH);
 		ucVersion = FBL_ucGetBootloaderVersion();
 		FBL_vUartWriteData(&ucVersion,1);
   }
@@ -717,6 +750,103 @@ void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************STOP DECLARE GETVERS FUNCTIONS *******************************************************/
 
+
+/*****************************************START DECLARE GETCID FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief  Gets chip identification number
+*	\param 
+* \return	
+*
+*/
+uint16_t FBL_Get_Mcu_ID(void)
+{
+	
+	uint16_t usCID = (uint16_t) (DBGMCU->IDCODE) & 0x0FFF;
+	
+	return usCID;
+}
+
+/*
+*
+* \brief  Handler for get chip identification number
+*	\param 
+* \return	
+*
+*/
+void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer)
+{
+	 uint16_t usCID = 0;
+	 uint32_t ulLength = puc8RxBuffer[0] + 1;
+	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
+	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	 {
+		 
+		usCID = FBL_Get_Mcu_ID();
+		FBL_vSendAck(FBL_GET_CID_ANSWER_LENGTH);
+	 	FBL_vUartWriteData((uint8_t *) &usCID, 2);
+		 
+	 }
+	 else
+	 {
+		FBL_vSendNack();
+	 }
+	
+}
+
+
+
+
+/*****************************************STOP DECLARE GETCID FUNCTIONS *******************************************************/
+
+/*****************************************START DECLARE GETRDP FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+uint8_t FBL_Get_RDP(void)
+{
+	
+	volatile uint32_t *pul_Address = (uint32_t *) 0x1FFFC000;
+	
+  return (uint8_t) ((*pul_Address) >> 8);
+}
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
+{
+	 uint8_t ucRDP = 0;
+	 uint32_t ulLength = puc8RxBuffer[0] + 1;
+	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
+	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	 {
+		 
+		ucRDP = FBL_Get_RDP();
+		FBL_vSendAck(FBL_GET_RDP_ANSWER_LENGTH);
+	 	FBL_vUartWriteData((uint8_t *)&ucRDP, 1);
+		 
+	 }
+	 else
+	 {
+		FBL_vSendNack();
+	 }
+	
+}
+
+
+/*****************************************STOP DECLARE GETRDP FUNCTIONS *******************************************************/
+
 /*
 *
 * \brief 
@@ -746,10 +876,11 @@ void FBL_vUartReadData(void)
 			  FBL_vGetHelp_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_GET_CID:
-					
+				FBL_vGetCID_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_GET_RDP_STATUS:
-			
+			  FBL_vGetRDP_Cmd(auc8UartRxBuffer);
+
 						break;
 				case FBL_GO_TO_ADDR:
 					
