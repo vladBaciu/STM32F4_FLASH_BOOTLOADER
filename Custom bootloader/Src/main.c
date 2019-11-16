@@ -627,9 +627,11 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 	uint32_t ulData;
 	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
 	{
-		ulData = pucData[ulI];
+		uint32_t ulData = pucData[ulI];
 		ulCRCValue = HAL_CRC_Accumulate(&hcrc,&ulData,1);
 	}
+	
+	__HAL_CRC_DR_RESET(&hcrc);
 	
 	if (ulCRCValue == ulCRCHost)
 	{
@@ -638,22 +640,26 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 	}
 
 	return ucReturnValue;
-#elseif
+#else
+	
 	uint32_t ulCRCValue = 0xFFFFFFFF;
 
 	
 
-	for(uint32_t ulI = 0; ulI < ulLength; ulI++)
+	for(uint8_t ucI = 0; ucI < ulLength; ucI++)
 	{
-			ulCRCValue = ulCRCValue ^ pucData[ulI];
+			ulCRCValue = ulCRCValue ^ pucData[ucI];
 
-			for (uint32_t ulI = 0; ulI < 8; ulI++)
+			for (uint8_t ucJ = 0; ucJ < 32; ucJ++)
 			{
-				if( (ulCRCValue >> 7) & 1)
+				if( ulCRCValue & 0x80000000)
 				{
-					ulCRCValue ^= FBL_CRC_POLYNOME;
+					ulCRCValue = (ulCRCValue << 1) ^ FBL_CRC_POLYNOME;
 				}
+				else
+				{
 					ulCRCValue = (ulCRCValue << 1);
+				}
 			}
 	}
 	
@@ -864,6 +870,21 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************STOP DECLARE GOTOADDRESS FUNCTIONS *******************************************************/
 
+/*****************************************START DECLARE FLASHERASE FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+}
+
+/*****************************************START DECLARE FLASHERASE FUNCTIONS *******************************************************/
 /*
 *
 * \brief 
@@ -902,25 +923,25 @@ void FBL_vUartReadData(void)
 				FBL_vGoToAddress_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_FLASH_ERASE:
-			
+			  FBL_vFlashErase_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_MEM_WRITE:
-			
+			//	FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_EN_RW_PROTECT:
-				
+			//	FBL_vEnableRW_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_MEM_READ:
-				
+		//		FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_READ_SECTOR_P_STATUS:
-				
+		//		FBL_vReadSector_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_OTP_READ:
-				
+		//		FBL_vOTPRead_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_DIS_R_W_PROTECT:
-			
+		//	  FBL_vDisableRW_Cmd(auc8UartRxBuffer);
 						break;
 				 default:
 						FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");

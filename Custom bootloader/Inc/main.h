@@ -51,9 +51,9 @@ extern "C" {
 
 #define FBL_CRC_CUSTOM 							(0U)	
 #define FBL_CRC_HAL									(1U)
-#define FBL_CRC_POLYNOME				    (0xCB)
+#define FBL_CRC_POLYNOME				    (0x04C11DB7)
 
-#define FBL_CRC_VERIFY_VERSION			FBL_CUSTOM_CRC
+#define FBL_CRC_VERIFY_VERSION			FBL_CRC_CUSTOM
 
 
 
@@ -72,7 +72,7 @@ void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer);
-
+void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);
 
