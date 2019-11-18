@@ -45,6 +45,11 @@
 #define FBL_GET_VERSION_ANSWER_LENGTH					(1U)
 #define FBL_GET_CID_ANSWER_LENGTH							(2U)
 #define FBL_GET_RDP_ANSWER_LENGTH							(1U)
+#define FBL_GO_TO_ADDRESS_ANSWER_LENGTH		    (1U)
+
+#define FBL_ADDRESS_INVALID										(0x0C)
+#define FBL_ADDRESS_VALID											(0x0A)
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -93,6 +98,7 @@ static void MX_USART3_UART_Init(void);
 static void FBL_vPrintMsg(char *format,...);
 uint16_t FBL_Get_Mcu_ID(void);
 uint8_t FBL_Get_RDP(void);
+uint16_t FBL_Verify_Address(uint32_t ulAddress);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -855,6 +861,24 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************START DECLARE GOTOADDRESS FUNCTIONS *******************************************************/
 
+
+uint16_t FBL_Verify_Address(uint32_t ulAddress)
+{
+	if (((ulAddress  >=FLASH_BASE) && (ulAddress  <=FLASH_END))  ||
+			((ulAddress  >=SRAM1_BASE) && (ulAddress  <=SRAM1_BASE + 0)) ||
+			((ulAddress  >=SRAM2_BASE) && (ulAddress  <=SRAM2_BASE + 0)) ||
+			((ulAddress  >=BKPSRAM_BASE) && (ulAddress  <=BKPSRAM_BASE + 0)))
+	{
+			return FBL_ADDRESS_VALID;
+		
+	}
+	else
+	{
+			return FBL_ADDRESS_INVALID;
+				
+	}
+	
+}
 /*
 *
 * \brief  
@@ -865,6 +889,28 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 {
 	
+	 uint32_t ulLength = puc8RxBuffer[0] + 1;
+	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
+	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	 {
+    uint32_t ulAddress = *((uint32_t *)(puc8RxBuffer +2)); 
+		ulAddress = ulAddress + 1;
+		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
+		if(FBL_Verify_Address(ulAddress) == FBL_ADDRESS_VALID)
+		{
+			void (*FBL_Jump)(void) = (void *) ulAddress;
+			uint8_t ucAck = FBL_ADDRESS_VALID;
+			FBL_vUartWriteData((uint8_t *)&ucAck, 1);
+			FBL_Jump();
+		}
+		 
+	 }
+	 else
+	 {
+		uint8_t ucAck = FBL_ADDRESS_INVALID;
+		FBL_vSendNack();
+		FBL_vUartWriteData((uint8_t *)&ucAck, 1);
+	 }
 }
 
 
