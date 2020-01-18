@@ -55,7 +55,10 @@ extern "C" {
 
 #define FBL_CRC_VERIFY_VERSION			FBL_CRC_CUSTOM
 
-
+#define FBL_SRAM1_SIZE (1024 * 112)
+#define FBL_SRAM2_SIZE (1024 * 16)
+#define FBL_FLASH_SIZE (1024 * 1000)
+#define FBL_BKPSRAM_SIZE (1024 * 4 )
 
 /* USER CODE END EM */
 
@@ -73,6 +76,7 @@ void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer);
+
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);
 

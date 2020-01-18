@@ -46,10 +46,13 @@
 #define FBL_GET_CID_ANSWER_LENGTH							(2U)
 #define FBL_GET_RDP_ANSWER_LENGTH							(1U)
 #define FBL_GO_TO_ADDRESS_ANSWER_LENGTH		    (1U)
+#define FBL_ERASE_ANSWER_LENGTH		    				(1U)
 
 #define FBL_ADDRESS_INVALID										(0x0C)
 #define FBL_ADDRESS_VALID											(0x0A)
 
+#define FBL_INVALID_SECTOR_NUMBER							(0x0D)
+#define FBL_INVALID_NUMBER_SECTORS						(0x0B)
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -865,10 +868,11 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
 uint16_t FBL_Verify_Address(uint32_t ulAddress)
 {
 	if (((ulAddress  >=FLASH_BASE) && (ulAddress  <=FLASH_END))  ||
-			((ulAddress  >=SRAM1_BASE) && (ulAddress  <=SRAM1_BASE + 0)) ||
-			((ulAddress  >=SRAM2_BASE) && (ulAddress  <=SRAM2_BASE + 0)) ||
-			((ulAddress  >=BKPSRAM_BASE) && (ulAddress  <=BKPSRAM_BASE + 0)))
+			((ulAddress  >=SRAM1_BASE) && (ulAddress  <=SRAM1_BASE + FBL_SRAM1_SIZE)) ||
+			((ulAddress  >=SRAM2_BASE) && (ulAddress  <=SRAM2_BASE + FBL_SRAM2_SIZE)) ||
+			((ulAddress  >=BKPSRAM_BASE) && (ulAddress  <=BKPSRAM_BASE + FBL_BKPSRAM_SIZE)))
 	{
+		
 			return FBL_ADDRESS_VALID;
 		
 	}
@@ -888,28 +892,34 @@ uint16_t FBL_Verify_Address(uint32_t ulAddress)
 */
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 {
-	
+	 uint8_t ucAck;
+	uint32_t ulAddress;
 	 uint32_t ulLength = puc8RxBuffer[0] + 1;
 	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
 	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	 {
-    uint32_t ulAddress = *((uint32_t *)(puc8RxBuffer +2)); 
+    ulAddress = *((uint32_t *)(puc8RxBuffer +2)); 
+		// set T bit of EPSR to 1
 		ulAddress = ulAddress + 1;
+		 
 		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
 		if(FBL_Verify_Address(ulAddress) == FBL_ADDRESS_VALID)
 		{
 			void (*FBL_Jump)(void) = (void *) ulAddress;
-			uint8_t ucAck = FBL_ADDRESS_VALID;
+			ucAck = FBL_ADDRESS_VALID;
 			FBL_vUartWriteData((uint8_t *)&ucAck, 1);
 			FBL_Jump();
+		}
+		else
+		{
+			ucAck = FBL_ADDRESS_INVALID;
+			FBL_vUartWriteData((uint8_t *)&ucAck, 1);
 		}
 		 
 	 }
 	 else
 	 {
-		uint8_t ucAck = FBL_ADDRESS_INVALID;
-		FBL_vSendNack();
-		FBL_vUartWriteData((uint8_t *)&ucAck, 1);
+		 FBL_vSendNack();
 	 }
 }
 
@@ -927,10 +937,67 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 */
 void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 {
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	uint32_t ulError;
+	FLASH_EraseInitTypeDef tFlash1;
 	
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	 {
+		 FBL_vSendAck(FBL_ERASE_ANSWER_LENGTH);
+		 
+		 
+		 if(puc8RxBuffer[2] > 8)
+		 {
+			 ucReturnValue = FBL_INVALID_SECTOR_NUMBER;
+		 }
+		 
+		 if((puc8RxBuffer[2] == 0xFF) || (puc8RxBuffer[2] <8))
+		 {
+			 
+			 if(puc8RxBuffer[2] == 0xFF)
+			 {
+				 tFlash1.TypeErase = FLASH_TYPEERASE_MASSERASE;
+			 }
+			 else
+			 {
+				  
+				  if((8-puc8RxBuffer[2]) >= puc8RxBuffer[3])
+					{
+						
+						tFlash1.TypeErase = FLASH_TYPEERASE_SECTORS;
+						tFlash1.Sector = puc8RxBuffer[2];
+						tFlash1.NbSectors = puc8RxBuffer[3];
+					}	
+					else
+					{
+						ucReturnValue = FBL_INVALID_NUMBER_SECTORS;
+					}
+			 }
+			 tFlash1.Banks = FLASH_BANK_1;
+			 tFlash1.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+			 if ((ucReturnValue != FBL_INVALID_SECTOR_NUMBER) || (ucReturnValue != FBL_INVALID_NUMBER_SECTORS))
+			 {
+				 HAL_FLASH_Unlock();
+				 ucReturnValue = (uint8_t) HAL_FLASHEx_Erase(&tFlash1, &ulError);
+				 HAL_FLASH_Lock();
+			 }
+		 }
+		 
+		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+	 }
+	else
+	{
+		FBL_vSendNack();
+	}
 }
 
-/*****************************************START DECLARE FLASHERASE FUNCTIONS *******************************************************/
+/*****************************************STOP DECLARE FLASHERASE FUNCTIONS *******************************************************/
+
+
 /*
 *
 * \brief 
