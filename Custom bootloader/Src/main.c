@@ -47,6 +47,9 @@
 #define FBL_GET_RDP_ANSWER_LENGTH							(1U)
 #define FBL_GO_TO_ADDRESS_ANSWER_LENGTH		    (1U)
 #define FBL_ERASE_ANSWER_LENGTH		    				(1U)
+#define FBL_WRITE_ANSWER_LENGTH		    				(1U)
+
+#define FBL_GENERIC_NO_ERROR									(0xCC)
 
 #define FBL_ADDRESS_INVALID										(0x0C)
 #define FBL_ADDRESS_VALID											(0x0A)
@@ -102,6 +105,7 @@ static void FBL_vPrintMsg(char *format,...);
 uint16_t FBL_Get_Mcu_ID(void);
 uint8_t FBL_Get_RDP(void);
 uint16_t FBL_Verify_Address(uint32_t ulAddress);
+uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -997,6 +1001,79 @@ void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************STOP DECLARE FLASHERASE FUNCTIONS *******************************************************/
 
+/*****************************************START DECLARE MEMORY WRITE FUNCTIONS *******************************************************/
+
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen)
+{
+	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
+	HAL_FLASH_Unlock();
+
+  for(uint32_t ulI = 0 ; ulI <ulLen ; ulI++)
+    {
+        //Here we program the flash byte by byte
+        ucReturnValue = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,ulAddress+ulI,pucBuffer[ulI] );
+    }
+
+  HAL_FLASH_Lock();
+	
+	return ucReturnValue;
+	
+}
+
+
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	uint32_t ulMemoryAddress;
+	uint32_t ulPayloadLength;
+	
+	
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	ulMemoryAddress = *((uint32_t *)(&puc8RxBuffer[2]));
+	ulPayloadLength = puc8RxBuffer[6];
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		if(FBL_Verify_Address(ulMemoryAddress) == FBL_ADDRESS_VALID)
+		{
+		 FBL_vSendAck(FBL_WRITE_ANSWER_LENGTH);
+		
+		 ucReturnValue = FBL_ucExecute_MemoryWrite(&puc8RxBuffer[7],ulMemoryAddress,ulPayloadLength);
+		
+		}
+		else
+		{
+			
+			ucReturnValue = FBL_ADDRESS_INVALID;
+		}
+		FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+	}
+	else
+	{
+		FBL_vSendNack();
+	}
+	
+}
+/*****************************************STOP DECLARE MEMORY WRITE FUNCTIONS *******************************************************/
 
 /*
 *
@@ -1039,7 +1116,7 @@ void FBL_vUartReadData(void)
 			  FBL_vFlashErase_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_MEM_WRITE:
-			//	FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
+			  FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_EN_RW_PROTECT:
 			//	FBL_vEnableRW_Cmd(auc8UartRxBuffer);

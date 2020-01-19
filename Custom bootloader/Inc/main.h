@@ -76,6 +76,7 @@ void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer);
 
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);
