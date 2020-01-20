@@ -77,6 +77,11 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer);
 void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vEnable_RW_Protect_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer);
+void FBL_vRead_MemoryCmd(uint8_t *puc8RxBuffer);
+void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer);
 
 void FBL_vSendAck(uint8_t ucLengthResponse);
 void FBL_vSendNack(void);

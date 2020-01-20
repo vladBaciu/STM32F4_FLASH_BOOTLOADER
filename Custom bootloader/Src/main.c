@@ -48,8 +48,10 @@
 #define FBL_GO_TO_ADDRESS_ANSWER_LENGTH		    (1U)
 #define FBL_ERASE_ANSWER_LENGTH		    				(1U)
 #define FBL_WRITE_ANSWER_LENGTH		    				(1U)
+#define FBL_RW_PROTECT_LENGTH									(1U)
 
 #define FBL_GENERIC_NO_ERROR									(0xCC)
+#define FBL_GENERIC_ERROR											(0xAA)
 
 #define FBL_ADDRESS_INVALID										(0x0C)
 #define FBL_ADDRESS_VALID											(0x0A)
@@ -106,6 +108,7 @@ uint16_t FBL_Get_Mcu_ID(void);
 uint8_t FBL_Get_RDP(void);
 uint16_t FBL_Verify_Address(uint32_t ulAddress);
 uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen);
+uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, uint8_t uc8EN);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -1075,6 +1078,161 @@ void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
 }
 /*****************************************STOP DECLARE MEMORY WRITE FUNCTIONS *******************************************************/
 
+
+
+/*****************************************START DECLARE MEMORY EN/DIS READ/WRITE PROTECT FUNCTIONS *******************************************************/
+
+
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, uint8_t uc8EN)
+{
+	volatile uint32_t *pulOPTCR = (uint32_t*) 0x40023C14;
+	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
+	if(uc8EN)
+	{
+		if (u8ProtectionMode == 1)
+		{
+			
+			
+		}
+		else if (u8ProtectionMode == 2)
+		{
+			
+			
+		}
+		else
+		{
+			ucReturnValue = FBL_GENERIC_ERROR;
+		}
+	}
+	else
+	{
+		HAL_FLASH_OB_Unlock();
+
+		while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+		
+		*pulOPTCR = *pulOPTCR & (1<<31); // has no effect: default value is  0x0FFF AAED
+		*pulOPTCR = *pulOPTCR | (FLASH_OPTCR_nWRP_Msk & 0x0FF);
+		*pulOPTCR = *pulOPTCR | FLASH_OPTCR_OPTSTRT_Msk;
+		
+		while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+		HAL_FLASH_OB_Lock();
+	}
+	
+	return ucReturnValue;
+}
+
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+
+void FBL_vEnable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
+{
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	#define ENABLE_RW (1U)
+	
+	
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		 FBL_vSendAck(FBL_RW_PROTECT_LENGTH);
+		
+		 ucReturnValue = FBL_Modify_RW_Protection(puc8RxBuffer[2],puc8RxBuffer[3],ENABLE_RW);
+		
+		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+
+		
+	}
+	else
+	{
+		FBL_vSendNack();	
+	}
+	
+}
+
+
+
+/*
+*
+* \brief  
+*	\param 
+* \return	
+*
+*/
+
+void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+	
+}
+
+
+/*****************************************STOP DECLARE MEMORY EN/DIS READ/WRITE PROTECT FUNCTIONS *******************************************************/
+
+/*****************************************START DECLARE MEMORY READ PROTECTION STATUS FUNCTIONS *******************************************************/
+
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+}
+
+
+/*****************************************STOP DECLARE MEMORY READ PROTECTION STATUS WRITE FUNCTIONS *******************************************************/
+
+
+/*****************************************START DECLARE MEMORY READ OTP FUNCTIONS *******************************************************/
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+
+void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
+{
+	
+}
+
+/*****************************************STOP DECLARE MEMORY READ OTP FUNCTIONS *******************************************************/
+
+/*****************************************STOP DECLARE MEMORY READ FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/void FBL_vRead_MemoryCmd(uint8_t *puc8RxBuffer)
+{
+	
+}
+/*****************************************STOP DECLARE MEMORY READ FUNCTIONS *******************************************************/
+
 /*
 *
 * \brief 
@@ -1119,22 +1277,22 @@ void FBL_vUartReadData(void)
 			  FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_EN_RW_PROTECT:
-			//	FBL_vEnableRW_Cmd(auc8UartRxBuffer);
+			  FBL_vEnable_RW_Protect_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_MEM_READ:
-		//		FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
+				FBL_vRead_MemoryCmd(auc8UartRxBuffer);
 						break;
 				case FBL_READ_SECTOR_P_STATUS:
-		//		FBL_vReadSector_Cmd(auc8UartRxBuffer);
+				FBL_vRead_Sector_ProtectionStatus_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_OTP_READ:
-		//		FBL_vOTPRead_Cmd(auc8UartRxBuffer);
+				FBL_vRead_OTP_Cmd(auc8UartRxBuffer);
 						break;
 				case FBL_DIS_R_W_PROTECT:
-		//	  FBL_vDisableRW_Cmd(auc8UartRxBuffer);
+				FBL_vDisable_RW_Protect_Cmd(auc8UartRxBuffer);
 						break;
 				 default:
-						FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+				FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
 						break;
 		}
 	}
