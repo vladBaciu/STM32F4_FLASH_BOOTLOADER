@@ -109,6 +109,7 @@ uint8_t FBL_Get_RDP(void);
 uint16_t FBL_Verify_Address(uint32_t ulAddress);
 uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen);
 uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, uint8_t uc8EN);
+uint16_t FBL_vRw_ProtectionStatus(void);															 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -1099,12 +1100,28 @@ uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, ui
 	{
 		if (u8ProtectionMode == 1)
 		{
-			
+				HAL_FLASH_OB_Unlock();
+
+				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+		
+				*pulOPTCR &= ~(1 << 31); // has no effect: default value is  0x0FFF AAED
+			  *pulOPTCR &= ~ (u8Sectors << 16);
+				*pulOPTCR |= ( 1 << 1);
+				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+				HAL_FLASH_OB_Lock();
 			
 		}
 		else if (u8ProtectionMode == 2)
 		{
-			
+				HAL_FLASH_OB_Unlock();
+
+				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+				*pulOPTCR |= (1 << 31);
+			  *pulOPTCR &= ~(0xff << 16);
+				*pulOPTCR |= (u8Sectors << 16);
+				*pulOPTCR |= ( 1 << 1);
+				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+				HAL_FLASH_OB_Lock();
 			
 		}
 		else
@@ -1177,7 +1194,27 @@ void FBL_vEnable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 
 void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 {
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	#define DISABLE_RW (0U)
 	
+	
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		 FBL_vSendAck(FBL_RW_PROTECT_LENGTH);
+		
+		 ucReturnValue = FBL_Modify_RW_Protection(puc8RxBuffer[2],puc8RxBuffer[3],DISABLE_RW);
+		
+		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+
+	}
+	else
+	{
+		FBL_vSendNack();	
+	}
 	
 }
 
@@ -1185,6 +1222,30 @@ void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 /*****************************************STOP DECLARE MEMORY EN/DIS READ/WRITE PROTECT FUNCTIONS *******************************************************/
 
 /*****************************************START DECLARE MEMORY READ PROTECTION STATUS FUNCTIONS *******************************************************/
+
+/*
+*
+* \brief 
+*	\param 
+* \return	
+*
+*/
+uint16_t FBL_vRw_ProtectionStatus(void)
+{
+	
+	
+	FLASH_OBProgramInitTypeDef OBInit;
+
+	HAL_FLASH_OB_Unlock();
+
+	HAL_FLASHEx_OBGetConfig(&OBInit);
+
+	HAL_FLASH_Lock();
+
+	return (uint16_t)OBInit.WRPSector;
+
+}
+
 
 
 /*
@@ -1196,6 +1257,27 @@ void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 */
 void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 {
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	
+	
+	
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		 FBL_vSendAck(FBL_RW_PROTECT_LENGTH);
+		
+		 ucReturnValue = FBL_vRw_ProtectionStatus();
+		
+		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+
+	}
+	else
+	{
+		FBL_vSendNack();	
+	}
 	
 }
 
@@ -1215,6 +1297,9 @@ void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 {
 	
+	
+	
+	
 }
 
 /*****************************************STOP DECLARE MEMORY READ OTP FUNCTIONS *******************************************************/
@@ -1229,6 +1314,9 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 *
 */void FBL_vRead_MemoryCmd(uint8_t *puc8RxBuffer)
 {
+	
+	
+	
 	
 }
 /*****************************************STOP DECLARE MEMORY READ FUNCTIONS *******************************************************/
