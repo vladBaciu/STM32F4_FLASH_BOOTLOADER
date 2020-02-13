@@ -595,9 +595,9 @@ void FBL_vJumpToUserApplication(void)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Sends acknowlenge messages on UART debug interface.  
+*	\param ucLengthResponse: length to follow
+* \return	-
 *
 */
 
@@ -613,9 +613,9 @@ void FBL_vSendAck(uint8_t ucLengthResponse)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Sends not acknowlenge messages on UART debug interface.
+*	\param -
+* \return	-
 *
 */
 
@@ -627,9 +627,11 @@ void FBL_vSendNack(void)
 }
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Verifies the CRC computed by the host application.
+*	\param uint8_t *pucData: pointer to received data buffer
+*	\param uint32_t ulLength: length of the received data buffer
+*	\param uint32_t ulCRC: received CRC value to be compared with
+* \return	FBL_CRC_SUCCESS or FBL_CRC_FAIL error codes
 *
 */
 
@@ -637,7 +639,7 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 {
 	
 	  uint8_t  ucReturnValue = FBL_CRC_FAIL;
-	
+/* Choose to use HAL CRC library */
 #if (FBL_CRC_VERIFY_VERSION == FBL_CRC_HAL)
 	
 	uint32_t ulCRCValue = 0xFF;
@@ -662,11 +664,11 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 	uint32_t ulCRCValue = 0xFFFFFFFF;
 
 	
-
+	/* Outer loop for byte progessing */
 	for(uint8_t ucI = 0; ucI < ulLength; ucI++)
 	{
 			ulCRCValue = ulCRCValue ^ pucData[ucI];
-
+			/* Inner loop for bit processing */
 			for (uint8_t ucJ = 0; ucJ < 32; ucJ++)
 			{
 				if( ulCRCValue & 0x80000000)
@@ -680,6 +682,7 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 			}
 	}
 	
+	/* Check if the computed value is the same as the received value */
 	if (ulCRCValue == ulCRCHost)
 	{
 		ucReturnValue = FBL_CRC_SUCCESS;
