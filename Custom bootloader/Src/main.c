@@ -695,6 +695,16 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 		return ucReturnValue;
 }
 
+
+
+/*
+*
+* \brief Transmits data on UART debug interface
+*	\param uint8_t *pucBuffer: transmit buffer
+*	\param uint32_t ulLength: transmit buffer length
+* \return	-
+*
+*/
 void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength)
 {
 	HAL_UART_Transmit(FBL_UART_CHANNEL_DEBUG_INTERFACE,pucBuffer,ulLength,HAL_MAX_DELAY);
@@ -708,9 +718,9 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief  Returns the flash bootloader current version
+*	\param  -
+* \return	FBL_VERSION
 *
 */
 uint8_t FBL_ucGetBootloaderVersion(void)
@@ -721,9 +731,9 @@ uint8_t FBL_ucGetBootloaderVersion(void)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief  Calls FBL_ucGetBootloaderVersion and sends on UART debug interface the bootloader version.
+*	\param  uint8_t *puc8RxBuffer: received command buffer
+* \return	-
 *
 */
 void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
@@ -749,14 +759,11 @@ void FBL_vGetVersion_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief	Handle for get help command. Transmits on UART debug interface the bootloader supported commands.
+*	\param	uint8_t *puc8RxBuffer: received command buffer 
+* \return	-
 *
 */
-
-
-
 void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer)
 {
 	 uint32_t ulLength = puc8RxBuffer[0] + 1;
@@ -782,8 +789,8 @@ void FBL_vGetHelp_Cmd(uint8_t *puc8RxBuffer)
 /*
 *
 * \brief  Gets chip identification number
-*	\param 
-* \return	
+*	\param  -
+* \return	-
 *
 */
 uint16_t FBL_Get_Mcu_ID(void)
@@ -796,9 +803,9 @@ uint16_t FBL_Get_Mcu_ID(void)
 
 /*
 *
-* \brief  Handler for get chip identification number
-*	\param 
-* \return	
+* \brief  Handler for get chip identification number.
+*	\param  uint8_t *puc8RxBuffer: received command buffer 
+* \return	-
 *
 */
 void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer)
@@ -830,9 +837,9 @@ void FBL_vGetCID_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Reads the option bytes from 0x1FFFC000.
+*	\param  -
+* \return	uint8. Returns the bits 15:8 of RDP.
 *
 */
 uint8_t FBL_Get_RDP(void)
@@ -845,9 +852,9 @@ uint8_t FBL_Get_RDP(void)
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief	Handler function for get read protection option byte command.	
+*	\param 	uint8_t *puc8RxBuffer: received command buffer 
+* \return	-
 *
 */
 void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
@@ -875,7 +882,13 @@ void FBL_vGetRDP_Cmd(uint8_t *puc8RxBuffer)
 
 /*****************************************START DECLARE GOTOADDRESS FUNCTIONS *******************************************************/
 
-
+/*
+*
+* \brief	Verifies if the address is in the valid range addresses.
+*	\param	uint32_t ulAddress: address to be checked
+* \return	uint16. FBL_ADDRESS_VALID or FBL_ADDRESS_INVALID
+*
+*/
 uint16_t FBL_Verify_Address(uint32_t ulAddress)
 {
 	if (((ulAddress  >=FLASH_BASE) && (ulAddress  <=FLASH_END))  ||
@@ -896,21 +909,30 @@ uint16_t FBL_Verify_Address(uint32_t ulAddress)
 }
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Handler function for go to address command.
+*	\param	uint8_t *puc8RxBuffer: received command buffer 
+* \return	-
 *
 */
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 {
 	 uint8_t ucAck;
-	uint32_t ulAddress;
+	 uint32_t ulAddress;
 	 uint32_t ulLength = puc8RxBuffer[0] + 1;
+	 /* 
+			Get CRC position from rx command. Position to the end of the command puc8RxBuffer + ulLength 
+			and then subtract 4 because CRC represents the last 4 bytes in the command
+	 */
 	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
 	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	 {
+		/*
+			Get address position from rx command
+		*/
     ulAddress = *((uint32_t *)(puc8RxBuffer +2)); 
-		// set T bit of EPSR to 1
+		/* 
+		 Don't forget about the T bit to execute thumb instructions.
+		*/
 		ulAddress = ulAddress + 1;
 		 
 		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
@@ -941,9 +963,9 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Handler function for flash erase command
+*	\param	uint8_t *puc8RxBuffer: received command buffer  
+* \return	-	
 *
 */
 void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
@@ -953,8 +975,14 @@ void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 	uint32_t ulCRCHost;
 	uint32_t ulError;
 	FLASH_EraseInitTypeDef tFlash1;
-	
+	/* 
+		Get length and add 1 to include the total length computed by CRC 
+	*/
 	ulLength = puc8RxBuffer[0] + 1;
+	/* 
+		Get CRC position from rx command. Position to the end of the command puc8RxBuffer + ulLength 
+		and then subtract 4 because CRC represents the last 4 bytes in the command
+	 */
 	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
 	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	 {
@@ -968,17 +996,25 @@ void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 		 
 		 if((puc8RxBuffer[2] == 0xFF) || (puc8RxBuffer[2] <8))
 		 {
-			 
+			 /* 
+				When sector number is 0xFF the command performs a mass erase 
+			 */
 			 if(puc8RxBuffer[2] == 0xFF)
 			 {
 				 tFlash1.TypeErase = FLASH_TYPEERASE_MASSERASE;
+				 // tFlash1.Sector = puc8RxBuffer[2] - Does not matter
+				 // tFlash1.NbSectors = puc8RxBuffer[3] - Does not matter
 			 }
 			 else
 			 {
-				  
+				  /*
+						Check if the reference sector and the number of sectors do not overflow the flash memory sectors 
+				  */
 				  if((8-puc8RxBuffer[2]) >= puc8RxBuffer[3])
 					{
-						
+						/* 
+							Perform sector type erase 
+						*/
 						tFlash1.TypeErase = FLASH_TYPEERASE_SECTORS;
 						tFlash1.Sector = puc8RxBuffer[2];
 						tFlash1.NbSectors = puc8RxBuffer[3];
