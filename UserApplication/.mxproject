@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=E:/Workspace/Keil_Workspace/User application/UserApplication/Inc
+HeaderPath=E:/Workspace/Keil_Workspace/UserApplication/Inc
 HeaderFiles=usb_host.h;usbh_conf.h;usbh_platform.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=E:/Workspace/Keil_Workspace/User application/UserApplication/Src
+SourcePath=E:/Workspace/Keil_Workspace/UserApplication/Src
 SourceFiles=usb_host.c;usbh_conf.c;usbh_platform.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

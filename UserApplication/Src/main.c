@@ -100,22 +100,21 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
-  MX_USB_HOST_Init();
+  //MX_USB_HOST_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-   char str[] = "HelloFromApplication";
+   char str[] = "HelloFsromApplication\n";
   /* USER CODE END 2 */
-
+ 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-    MX_USB_HOST_Process();
+   // MX_USB_HOST_Process();
 		
-		HAL_UART_Transmit(&huart3,(uint8_t *) str,sizeof(str),HAL_MAX_DELAY);
-		uint32_t tick = HAL_GetTick();
-		while (HAL_GetTick() <= tick + 500);
+	 HAL_UART_Transmit(&huart3,(uint8_t *) str,sizeof(str),HAL_MAX_DELAY);
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

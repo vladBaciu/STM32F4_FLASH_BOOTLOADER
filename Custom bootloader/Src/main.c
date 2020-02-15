@@ -155,7 +155,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	char somedata[] = "Hello from the bootloader";
   /* USER CODE END 2 */
-
+ 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -164,10 +164,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		
-		FBL_vPrintMsg("ABCD\n");
+		FBL_vPrintMsg("FBL\n");
 		uint32_t ul32CurrentTickValue = HAL_GetTick();
 		while ( HAL_GetTick() <= (ul32CurrentTickValue + 500));
-		//FBL_vJumpToUserApplication();
+		//
 		
 
 		FBL_vUartReadData();
@@ -688,9 +688,6 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 		ucReturnValue = FBL_CRC_SUCCESS;
 		
 	}
-
-
-	
 #endif
 		return ucReturnValue;
 }
@@ -929,11 +926,16 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 		/*
 			Get address position from rx command
 		*/
-    ulAddress = *((uint32_t *)(puc8RxBuffer +2)); 
+    ulAddress = *((uint32_t *)&puc8RxBuffer[2]); 
 		/* 
 		 Don't forget about the T bit to execute thumb instructions.
+		 The program hands in HardFault_Handler when T bit is 0 because the cortex M doesn't support ARM instruction set.
 		*/
-		ulAddress = ulAddress + 1;
+		 if ((ulAddress & (uint32_t) 0x01) == (uint32_t) 0x00)
+		 {
+				ulAddress += 1;
+		 }
+		
 		 
 		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
 		if(FBL_Verify_Address(ulAddress) == FBL_ADDRESS_VALID)
@@ -1373,7 +1375,7 @@ void FBL_vUartReadData(void)
 	while(1)
 	{
 		/* Print debug message */
-		FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+		FBL_vPrintMsg("FBL_DEBUG_MSG: Enter in command mode. \n");
 		/* Prepare buffer to receive data */
 		memset(auc8UartRxBuffer,0,FBL_UART_RX_LEN);
 		/* Wait for first byte. Fist byte represents the length of the command */
