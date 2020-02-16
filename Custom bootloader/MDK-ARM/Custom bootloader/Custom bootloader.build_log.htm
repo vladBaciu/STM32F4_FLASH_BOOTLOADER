@@ -36,15 +36,15 @@ compiling main.c...
   	pvAppResetHandler = (void *) ulResetHandlerAddr;
 ../Src/main.c(943): warning:  #144-D: a value of type "void *" cannot be used to initialize an entity of type "void (*)(void)"
   			void (*FBL_Jump)(void) = (void *) ulAddress;
-../Src/main.c(1148): warning:  #61-D: integer operation result is out of range
+../Src/main.c(1168): warning:  #61-D: integer operation result is out of range
   				*pulOPTCR &= ~(1 << 31); // has no effect: default value is  0x0FFF AAED
-../Src/main.c(1160): warning:  #61-D: integer operation result is out of range
+../Src/main.c(1180): warning:  #61-D: integer operation result is out of range
   				*pulOPTCR |= (1 << 31);
-../Src/main.c(1160): warning:  #68-D: integer conversion resulted in a change of sign
+../Src/main.c(1180): warning:  #68-D: integer conversion resulted in a change of sign
   				*pulOPTCR |= (1 << 31);
-../Src/main.c(1179): warning:  #61-D: integer operation result is out of range
+../Src/main.c(1199): warning:  #61-D: integer operation result is out of range
   		*pulOPTCR = *pulOPTCR & (1<<31); // has no effect: default value is  0x0FFF AAED
-../Src/main.c(1179): warning:  #68-D: integer conversion resulted in a change of sign
+../Src/main.c(1199): warning:  #68-D: integer conversion resulted in a change of sign
   		*pulOPTCR = *pulOPTCR & (1<<31); // has no effect: default value is  0x0FFF AAED
 ../Src/main.c: 9 warnings, 0 errors
 linking...

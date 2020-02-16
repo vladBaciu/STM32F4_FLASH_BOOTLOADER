@@ -965,8 +965,8 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  Handler function for flash erase command
-*	\param	uint8_t *puc8RxBuffer: received command buffer  
+* \brief  Handler function for flash erase command.
+*	\param	uint8_t *puc8RxBuffer: incoming command buffer.
 * \return	-	
 *
 */
@@ -1051,9 +1051,11 @@ void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Performs flash programming byte by byte.
+*	\param	uint8_t *pucBuffer: input buffer that contains data to be write to memory.
+*	\param  uint32_t ulAddress: address memory location where to write the incoming buffer.
+*	\param  uint32_t ulLen: length of the incoming buffer.
+* \return	FBL_GENERIC_NO_ERROR or HAL_FLASH_Program error
 *
 */
 uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen)
@@ -1063,7 +1065,9 @@ uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32
 
   for(uint32_t ulI = 0 ; ulI <ulLen ; ulI++)
     {
-        //Here we program the flash byte by byte
+        /* 
+				Flash programming
+			  */
         ucReturnValue = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,ulAddress+ulI,pucBuffer[ulI] );
     }
 
@@ -1077,9 +1081,9 @@ uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief	Handler function for memory write command. 
+*	\param	uint8_t *puc8RxBuffer: incoming command buffer. 
+* \return	-
 *
 */
 void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
@@ -1091,17 +1095,32 @@ void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
 	uint32_t ulMemoryAddress;
 	uint32_t ulPayloadLength;
 	
-	
+	/* 
+		Get length and add 1 to include the total length computed by CRC 
+	*/
 	ulLength = puc8RxBuffer[0] + 1;
+	/* 
+		Get CRC position from rx command. Position to the end of the command puc8RxBuffer + ulLength 
+		and then subtract 4 because CRC represents the last 4 bytes in the command
+	*/
 	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	/* 
+		Get the base memory address
+	*/
 	ulMemoryAddress = *((uint32_t *)(&puc8RxBuffer[2]));
+	/* 
+		Get the payload length
+	*/
 	ulPayloadLength = puc8RxBuffer[6];
 	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	{
+		FBL_vSendAck(FBL_WRITE_ANSWER_LENGTH);
+		/*
+			Check the validity of the base memory address
+		*/
 		if(FBL_Verify_Address(ulMemoryAddress) == FBL_ADDRESS_VALID)
 		{
-		 FBL_vSendAck(FBL_WRITE_ANSWER_LENGTH);
-		
+		 
 		 ucReturnValue = FBL_ucExecute_MemoryWrite(&puc8RxBuffer[7],ulMemoryAddress,ulPayloadLength);
 		
 		}
@@ -1110,6 +1129,7 @@ void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
 			
 			ucReturnValue = FBL_ADDRESS_INVALID;
 		}
+		
 		FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
 	}
 	else

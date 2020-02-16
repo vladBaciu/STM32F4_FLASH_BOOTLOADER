@@ -67,8 +67,8 @@ Section Cross References
     main.o(i.FBL_vGoToAddress_Cmd) refers to main.o(i.FBL_vSendNack) for FBL_vSendNack
     main.o(i.FBL_vJumpToUserApplication) refers to main.o(i.FBL_vPrintMsg) for FBL_vPrintMsg
     main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_ucVerifyCRC) for FBL_ucVerifyCRC
-    main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_Verify_Address) for FBL_Verify_Address
     main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_vSendAck) for FBL_vSendAck
+    main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_Verify_Address) for FBL_Verify_Address
     main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_ucExecute_MemoryWrite) for FBL_ucExecute_MemoryWrite
     main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_vUartWriteData) for FBL_vUartWriteData
     main.o(i.FBL_vMemoryWrite_Cmd) refers to main.o(i.FBL_vSendNack) for FBL_vSendNack
