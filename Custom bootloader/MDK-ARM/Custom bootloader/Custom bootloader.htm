@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Custom bootloader\Custom bootloader.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Custom bootloader\Custom bootloader.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Feb 16 23:43:52 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Feb 20 17:40:03 2020
 <BR><P>
 <H3>Maximum Stack Usage =        200 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -778,10 +778,11 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vDisable_RW_Protect_Cmd
 </UL>
 
-<P><STRONG><a name="[91]"></a>FBL_vUartReadData</STRONG> (Thumb, 180 bytes, Stack size 0 bytes, main.o(i.FBL_vUartReadData))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = FBL_vUartReadData &rArr; FBL_vPrintMsg &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[91]"></a>FBL_vUartReadData</STRONG> (Thumb, 222 bytes, Stack size 8 bytes, main.o(i.FBL_vUartReadData))
+<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = FBL_vUartReadData &rArr; FBL_vFlashErase_Cmd &rArr; FBL_vUartWriteData &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
+<LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartWriteData
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_MemoryCmd
@@ -794,7 +795,6 @@ Global Symbols
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vEnable_RW_Protect_Cmd
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vDisable_RW_Protect_Cmd
-<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vPrintMsg
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -805,7 +805,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -1362,7 +1363,6 @@ Local Symbols
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[d7]"></a>MX_CRC_Init</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, main.o(i.MX_CRC_Init))

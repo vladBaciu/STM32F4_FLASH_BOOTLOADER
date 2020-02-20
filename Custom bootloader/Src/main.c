@@ -571,7 +571,7 @@ void FBL_vJumpToUserApplication(void)
 	/* Declare void pointer function for user application reset handler */
 	void (*pvAppResetHandler)(void);
 	
-	FBL_vPrintMsg ("FBL_DEBUG_MSG: FBL_vJumpToUserApplication");
+	//FBL_vPrintMsg ("FBL_DEBUG_MSG: FBL_vJumpToUserApplication");
 	
 	/* Store user application MSP from flash sector 2) */
 	
@@ -1148,7 +1148,7 @@ void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  
+* \brief  Handler function for modify read/write protection command. 
 *	\param 
 * \return	
 *
@@ -1391,11 +1391,11 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 */
 void FBL_vUartReadData(void)
 {
-	
+	uint8_t ucReturnValue = FBL_NONEXISTENT_COMMAND;
 	while(1)
 	{
 		/* Print debug message */
-		FBL_vPrintMsg("FBL_DEBUG_MSG: Enter in command mode. \n");
+		//FBL_vPrintMsg("FBL_DEBUG_MSG: Enter in command mode. \n");
 		/* Prepare buffer to receive data */
 		memset(auc8UartRxBuffer,0,FBL_UART_RX_LEN);
 		/* Wait for first byte. Fist byte represents the length of the command */
@@ -1441,7 +1441,8 @@ void FBL_vUartReadData(void)
 				FBL_vDisable_RW_Protect_Cmd(auc8UartRxBuffer);
 						break;
 				 default:
-				FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+				//FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
+				FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
 						break;
 		}
 	}

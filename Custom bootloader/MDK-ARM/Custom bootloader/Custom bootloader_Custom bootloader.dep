@@ -1,7 +1,7 @@
 Dependencies for Project 'Custom bootloader', Target 'Custom bootloader': (DO NOT MODIFY !)
 F (startup_stm32f407xx.s)(0x5DB5B22E)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_Custom_bootloader-IC:\Users\baciu\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\baciu\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include--pd "__UVISION_VERSION SETA 528" --pd "_RTE_ SETA 1" --pd "STM32F407xx SETA 1"--list startup_stm32f407xx.lst --xref -o "custom bootloader\startup_stm32f407xx.o" --depend "custom bootloader\startup_stm32f407xx.d")
-F (../Src/main.c)(0x5E49B793)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_Custom_bootloader-IC:\Users\baciu\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\baciu\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "custom bootloader\main.o" --omf_browse "custom bootloader\main.crf" --depend "custom bootloader\main.d")
-I (../Inc/main.h)(0x5E25EF30)
+F (../Src/main.c)(0x5E4EA844)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_Custom_bootloader-IC:\Users\baciu\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\baciu\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "custom bootloader\main.o" --omf_browse "custom bootloader\main.crf" --depend "custom bootloader\main.d")
+I (../Inc/main.h)(0x5E4EA84C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5DAB3837)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5DB5B22C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5DAB3837)
@@ -39,7 +39,7 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h)(0x5DAB3838)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x5CEBC034)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5CEBC032)
 F (../Src/stm32f4xx_it.c)(0x5DB5B22B)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_Custom_bootloader-IC:\Users\baciu\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\baciu\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "custom bootloader\stm32f4xx_it.o" --omf_browse "custom bootloader\stm32f4xx_it.crf" --depend "custom bootloader\stm32f4xx_it.d")
-I (../Inc/main.h)(0x5E25EF30)
+I (../Inc/main.h)(0x5E4EA84C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5DAB3837)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5DB5B22C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5DAB3837)
@@ -76,7 +76,7 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_hcd.h)(0x5DAB3837)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h)(0x5DAB3838)
 I (../Inc/stm32f4xx_it.h)(0x5DB5B22B)
 F (../Src/stm32f4xx_hal_msp.c)(0x5DB5B22B)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_Custom_bootloader-IC:\Users\baciu\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\baciu\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o "custom bootloader\stm32f4xx_hal_msp.o" --omf_browse "custom bootloader\stm32f4xx_hal_msp.crf" --depend "custom bootloader\stm32f4xx_hal_msp.d")
-I (../Inc/main.h)(0x5E25EF30)
+I (../Inc/main.h)(0x5E4EA84C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5DAB3837)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5DB5B22C)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5DAB3837)

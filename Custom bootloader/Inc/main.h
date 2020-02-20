@@ -159,6 +159,12 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 #define MEMS_INT2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
+#define OLD_APPLICATION		(1U)
+#define QT_APPLICATION		(2U)
+#define COMMAND_SET		QT_APPLICATION	
+
+
+#if (COMMAND_SET == OLD_APPLICATION)
 /* This command is used to read the bootloader version from the MCU */
 #define FBL_GET_VER						(0x51)
 
@@ -197,11 +203,56 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 /*This command is used disable all sector read/write protection */
 #define FBL_DIS_R_W_PROTECT				(0x5C)
 
+#elif (COMMAND_SET == QT_APPLICATION)
+
+/* This command is used to read the bootloader version from the MCU */
+#define FBL_GET_VER						(0x14)
+
+/* This command is used to know what are the commands supported by the bootloader */
+#define FBL_GET_HELP					(0x22)
+
+/*This command is used to read the MCU chip identification number */
+#define FBL_GET_CID						(0x44)
+
+/*This command is used to read the FLASH Read Protection level */
+#define FBL_GET_RDP_STATUS		(0x25)
+
+/*This command is used to jump bootloader to specified address */
+#define FBL_GO_TO_ADDR			  (0x19)
+
+/*This command is used to mass erase or sector erase of the user flash */
+#define FBL_FLASH_ERASE       (0x84)
+
+/*This command is used to write data in to different memories of the MCU */
+#define FBL_MEM_WRITE					(0x32)
+
+/*This command is used to enable or disable read/write protect on different sectors of the user flash */
+#define FBL_EN_RW_PROTECT			(0x3C)
+
+/*This command is used to read data from different memories of the microcontroller */
+#define FBL_MEM_READ					(0x2B)
+
+/*This command is used to read all the sector protection status */
+#define FBL_READ_SECTOR_P_STATUS	(0x78)
+
+/*This command is used to read the OTP contents */
+#define FBL_OTP_READ							(0x1F)
+
+/*This command is used disable all sector read/write protection */
+#define FBL_DIS_R_W_PROTECT				(0x6C)
+
+#else
+
+#error "Unavailable command set"
+
+#endif
+
 #define FLASH_SECTOR2_BASE_ADDRESS (0x08008000U)
 #define FBL_ACK_VALUE 						 (0xA5)
 #define FBL_NACK_VALUE 						 (0x7F)
 #define FBL_CRC_FAIL							 (0xC0)
 #define FBL_CRC_SUCCESS						 (0xB0)
+#define FBL_NONEXISTENT_COMMAND		 (0xD0)
 
 #define FBL_VERSION								 (0xAA)
 
