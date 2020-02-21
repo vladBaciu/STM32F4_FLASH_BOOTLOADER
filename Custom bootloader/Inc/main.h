@@ -253,7 +253,7 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 #define FBL_CRC_FAIL							 (0xC0)
 #define FBL_CRC_SUCCESS						 (0xB0)
 #define FBL_NONEXISTENT_COMMAND		 (0xD0)
-
+#define FBL_UART_DELAY      			 (0xFFU)
 #define FBL_VERSION								 (0xAA)
 
 /* USER CODE END Private defines */

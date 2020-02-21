@@ -913,7 +913,7 @@ uint16_t FBL_Verify_Address(uint32_t ulAddress)
 */
 void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 {
-	 uint8_t ucAck;
+	 uint8_t ucStatus;
 	 uint32_t ulAddress;
 	 uint32_t ulLength = puc8RxBuffer[0] + 1;
 	 /* 
@@ -923,6 +923,7 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 	 uint32_t ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4)); 
 	 if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
 	 {
+		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
 		/*
 			Get address position from rx command
 		*/
@@ -935,20 +936,18 @@ void FBL_vGoToAddress_Cmd(uint8_t *puc8RxBuffer)
 		 {
 				ulAddress += 1;
 		 }
-		
-		 
-		FBL_vSendAck(FBL_GO_TO_ADDRESS_ANSWER_LENGTH);
+
 		if(FBL_Verify_Address(ulAddress) == FBL_ADDRESS_VALID)
 		{
 			void (*FBL_Jump)(void) = (void *) ulAddress;
-			ucAck = FBL_ADDRESS_VALID;
-			FBL_vUartWriteData((uint8_t *)&ucAck, 1);
+			ucStatus = FBL_ADDRESS_VALID;
+			FBL_vUartWriteData(&ucStatus, 1);
 			FBL_Jump();
 		}
 		else
 		{
-			ucAck = FBL_ADDRESS_INVALID;
-			FBL_vUartWriteData((uint8_t *)&ucAck, 1);
+			ucStatus = FBL_ADDRESS_INVALID;
+			FBL_vUartWriteData(&ucStatus, 1);
 		}
 		 
 	 }
@@ -1399,9 +1398,9 @@ void FBL_vUartReadData(void)
 		/* Prepare buffer to receive data */
 		memset(auc8UartRxBuffer,0,FBL_UART_RX_LEN);
 		/* Wait for first byte. Fist byte represents the length of the command */
-		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,auc8UartRxBuffer,1,HAL_MAX_DELAY);
+		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,auc8UartRxBuffer,1,FBL_UART_DELAY);
 		/* Wait for the following bytes - command, parameters (or not) and CRC value */ 
-		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,&auc8UartRxBuffer[1],*auc8UartRxBuffer,HAL_MAX_DELAY);
+		HAL_UART_Receive(FBL_UART_CHANNEL_DEBUG_INTERFACE,&auc8UartRxBuffer[1],*auc8UartRxBuffer,FBL_UART_DELAY);
 		switch (auc8UartRxBuffer[1])
 		{
 				case FBL_GET_VER:
@@ -1442,7 +1441,7 @@ void FBL_vUartReadData(void)
 						break;
 				 default:
 				//FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");
-				FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+				//FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
 						break;
 		}
 	}
