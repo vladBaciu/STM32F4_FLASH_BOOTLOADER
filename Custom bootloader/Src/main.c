@@ -685,8 +685,7 @@ uint8_t FBL_ucVerifyCRC(uint8_t *pucData, uint32_t ulLength,uint32_t ulCRCHost)
 	/* Check if the computed value is the same as the received value */
 	if (ulCRCValue == ulCRCHost)
 	{
-		ucReturnValue = FBL_CRC_SUCCESS;
-		
+		ucReturnValue = FBL_CRC_SUCCESS;		
 	}
 #endif
 		return ucReturnValue;
@@ -1027,7 +1026,7 @@ void FBL_vFlashErase_Cmd(uint8_t *puc8RxBuffer)
 			 }
 			 tFlash1.Banks = FLASH_BANK_1;
 			 tFlash1.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-			 if ((ucReturnValue != FBL_INVALID_SECTOR_NUMBER) || (ucReturnValue != FBL_INVALID_NUMBER_SECTORS))
+			 if ((ucReturnValue != FBL_INVALID_SECTOR_NUMBER) && (ucReturnValue != FBL_INVALID_NUMBER_SECTORS))
 			 {
 				 HAL_FLASH_Unlock();
 				 ucReturnValue = (uint8_t) HAL_FLASHEx_Erase(&tFlash1, &ulError);
@@ -1438,6 +1437,9 @@ void FBL_vUartReadData(void)
 						break;
 				case FBL_DIS_R_W_PROTECT:
 				FBL_vDisable_RW_Protect_Cmd(auc8UartRxBuffer);
+						break;
+				case FBL_FLASH_BINARY_FILE:
+				FBL_vMemoryWrite_Cmd(auc8UartRxBuffer);
 						break;
 				 default:
 				//FBL_vPrintMsg("FBL_DEBUG_MSG:Invalid command code received from host \n");

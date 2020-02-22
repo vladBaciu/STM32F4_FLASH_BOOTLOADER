@@ -225,7 +225,7 @@ void FBL_vUartWriteData(uint8_t *pucBuffer, uint32_t ulLength);
 
 /*This command is used to write data in to different memories of the MCU */
 #define FBL_MEM_WRITE					(0x32)
-
+#define FBL_FLASH_BINARY_FILE	(0x33)
 /*This command is used to enable or disable read/write protect on different sectors of the user flash */
 #define FBL_EN_RW_PROTECT			(0x3C)
 
