@@ -48,7 +48,7 @@
 #define FBL_GO_TO_ADDRESS_ANSWER_LENGTH		    (1U)
 #define FBL_ERASE_ANSWER_LENGTH		    				(1U)
 #define FBL_WRITE_ANSWER_LENGTH		    				(1U)
-#define FBL_RW_PROTECT_LENGTH									(1U)
+#define FBL_RW_PROTECT_LENGTH									(2U)
 
 #define FBL_GENERIC_NO_ERROR									(0xCC)
 #define FBL_GENERIC_ERROR											(0xAA)
@@ -1157,27 +1157,44 @@ uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, ui
 	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
 	if(uc8EN)
 	{
-		if (u8ProtectionMode == 1)
+		/* 
+				Enable R/W protection
+		*/
+		if (u8ProtectionMode == 0x00)
 		{
+			
 				HAL_FLASH_OB_Unlock();
 
 				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
-		
-				*pulOPTCR &= ~(1 << 31); // has no effect: default value is  0x0FFF AAED
+				 /*
+					Set SPRMOD to 1.
+			  */
+				*pulOPTCR &= ~(1 << 31); // default value is  0x0FFF AAED
 			  *pulOPTCR &= ~ (u8Sectors << 16);
+			  /* 
+					Trigger option start.
+			  */
 				*pulOPTCR |= ( 1 << 1);
 				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
 				HAL_FLASH_OB_Lock();
 			
 		}
-		else if (u8ProtectionMode == 2)
+		else if (u8ProtectionMode == 0x01)
 		{
 				HAL_FLASH_OB_Unlock();
 
 				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
-				*pulOPTCR |= (1 << 31);
+			  /*
+					Set SPRMOD to 1.
+			  */
+				*pulOPTCR = *pulOPTCR | (1 << 31);
+			
 			  *pulOPTCR &= ~(0xff << 16);
 				*pulOPTCR |= (u8Sectors << 16);
+			
+				/* 
+					Trigger option start.
+			  */
 				*pulOPTCR |= ( 1 << 1);
 				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
 				HAL_FLASH_OB_Lock();
@@ -1190,12 +1207,18 @@ uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, ui
 	}
 	else
 	{
+		/* 
+			Disable R/W protection
+		*/
 		HAL_FLASH_OB_Unlock();
 
 		while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
 		
-		*pulOPTCR = *pulOPTCR & (1<<31); // has no effect: default value is  0x0FFF AAED
-		*pulOPTCR = *pulOPTCR | (FLASH_OPTCR_nWRP_Msk & 0x0FF);
+		*pulOPTCR = *pulOPTCR & ~(1<<31); // default value is  0x0FFF AAED
+		*pulOPTCR = *pulOPTCR | FLASH_OPTCR_nWRP_Msk;
+		/* 
+			Trigger option start.
+		*/
 		*pulOPTCR = *pulOPTCR | FLASH_OPTCR_OPTSTRT_Msk;
 		
 		while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
@@ -1284,9 +1307,9 @@ void FBL_vDisable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Read protection status option byte
+*	\param -
+* \return	uint16, the value of WRP bits
 *
 */
 uint16_t FBL_vRw_ProtectionStatus(void)
@@ -1309,9 +1332,9 @@ uint16_t FBL_vRw_ProtectionStatus(void)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Handler function for read protection status command.
+*	\param uint8_t *pucBuffer: input buffer that contains data to be write to memory.
+* \return	-
 *
 */
 void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
@@ -1319,8 +1342,8 @@ void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 	uint8_t ucReturnValue;
 	uint32_t ulLength;
 	uint32_t ulCRCHost;
-	
-	
+	volatile uint32_t *pulOPTCR = (uint32_t*) 0x40023C14;
+
 	
 	ulLength = puc8RxBuffer[0] + 1;
 	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
@@ -1331,7 +1354,8 @@ void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 		 ucReturnValue = FBL_vRw_ProtectionStatus();
 		
 		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
-
+		 ucReturnValue = (uint8_t) (*pulOPTCR >> 31) ;
+		 FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
 	}
 	else
 	{
