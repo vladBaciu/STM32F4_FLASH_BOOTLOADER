@@ -1381,27 +1381,45 @@ void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 
 void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 {
-	
+	uint8_t ucFlag = 0;
 	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
 	uint32_t ulLength;
 	uint32_t ulCRCHost;
+	uint8_t ucOTPBank;
 	volatile uint32_t *pulOPT_Base = (uint32_t*) 0x1FFF7800;
   uint32_t ulOTP_DataSetValue;
 	uint8_t  aucOTP_DataSetBytes[4];
 	uint8_t  ucSizeOfDataSet = sizeof(aucOTP_DataSetBytes);
 	ulLength = puc8RxBuffer[0] + 1;
 	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
-	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	ucOTPBank = *((uint32_t *)(puc8RxBuffer + 2));
+	
+	if(ucOTPBank == 0x00)
 	{
-		 FBL_vSendAck(ucSizeOfDataSet);
-		 
+		pulOPT_Base = (uint32_t*) 0x1FFF7800;
+	}
+	else if(ucOTPBank == 0x01)
+	{
+	  pulOPT_Base = (uint32_t*) 0x1FFF7900;
+	}
+	else
+	{
+		ucFlag = 1;	
+	}
+	
+	if((FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS))
+	{
+		
+		if (ucFlag == 0)
+		{
+		 FBL_vSendAck(0xFF);
 		 HAL_FLASH_Unlock();
 		
-		 for(uint16_t usI =1; usI <= 512; usI++)
+		 for(uint8_t usI =1; usI <= 0x40; usI++)
 		 {
 			
 				ulOTP_DataSetValue = (uint32_t) (*pulOPT_Base);
-				pulOPT_Base = pulOPT_Base + 4;
+				pulOPT_Base = pulOPT_Base + 1;
 				for (uint8_t ucJ = 0; ucJ <= 3; ucJ++)
 			  {
 					aucOTP_DataSetBytes[ucJ] = (uint8_t) (ulOTP_DataSetValue >> (ucJ * 8)) & 0x000000FF;
@@ -1412,7 +1430,13 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 		 }
 		
 		 HAL_FLASH_Lock();
-		
+	 }
+	 else
+	 {
+			FBL_vSendAck(0x01);
+		  ucReturnValue = FBL_GENERIC_ERROR;
+		  FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+	 }
 	}
 	else
 	{

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Custom bootloader\Custom bootloader.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Custom bootloader\Custom bootloader.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Feb 23 16:30:36 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Mar 01 01:29:26 2020
 <BR><P>
 <H3>Maximum Stack Usage =        200 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -420,13 +420,13 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[92]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<P><STRONG><a name="[93]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_MspInit
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_I2C_MspInit
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_HCD_MspInit
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 </UL>
 
@@ -592,7 +592,8 @@ Global Symbols
 <P><STRONG><a name="[79]"></a>FBL_ucVerifyCRC</STRONG> (Thumb, 66 bytes, Stack size 20 bytes, main.o(i.FBL_ucVerifyCRC))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = FBL_ucVerifyCRC
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -613,7 +614,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Modify_RW_Protection
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[7d]"></a>FBL_vEnable_RW_Protect_Cmd</STRONG> (Thumb, 62 bytes, Stack size 24 bytes, main.o(i.FBL_vEnable_RW_Protect_Cmd))
@@ -625,7 +626,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Modify_RW_Protection
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[7e]"></a>FBL_vFlashErase_Cmd</STRONG> (Thumb, 160 bytes, Stack size 48 bytes, main.o(i.FBL_vFlashErase_Cmd))
@@ -639,7 +640,7 @@ Global Symbols
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendAck
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[80]"></a>FBL_vGetCID_Cmd</STRONG> (Thumb, 60 bytes, Stack size 24 bytes, main.o(i.FBL_vGetCID_Cmd))
@@ -651,7 +652,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Get_Mcu_ID
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[82]"></a>FBL_vGetHelp_Cmd</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, main.o(i.FBL_vGetHelp_Cmd))
@@ -662,7 +663,7 @@ Global Symbols
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendAck
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[83]"></a>FBL_vGetRDP_Cmd</STRONG> (Thumb, 60 bytes, Stack size 24 bytes, main.o(i.FBL_vGetRDP_Cmd))
@@ -674,7 +675,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Get_RDP
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[85]"></a>FBL_vGetVersion_Cmd</STRONG> (Thumb, 56 bytes, Stack size 24 bytes, main.o(i.FBL_vGetVersion_Cmd))
@@ -686,7 +687,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucGetBootloaderVersion
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[87]"></a>FBL_vGoToAddress_Cmd</STRONG> (Thumb, 96 bytes, Stack size 32 bytes, main.o(i.FBL_vGoToAddress_Cmd))
@@ -698,7 +699,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Verify_Address
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[89]"></a>FBL_vMemoryWrite_Cmd</STRONG> (Thumb, 90 bytes, Stack size 32 bytes, main.o(i.FBL_vMemoryWrite_Cmd))
@@ -711,37 +712,46 @@ Global Symbols
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucExecute_MemoryWrite
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Verify_Address
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
-<P><STRONG><a name="[94]"></a>FBL_vRead_MemoryCmd</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.FBL_vRead_MemoryCmd))
-<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<P><STRONG><a name="[95]"></a>FBL_vRead_MemoryCmd</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.FBL_vRead_MemoryCmd))
+<BR><BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
-<P><STRONG><a name="[95]"></a>FBL_vRead_OTP_Cmd</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.FBL_vRead_OTP_Cmd))
-<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<P><STRONG><a name="[8e]"></a>FBL_vRead_OTP_Cmd</STRONG> (Thumb, 168 bytes, Stack size 48 bytes, main.o(i.FBL_vRead_OTP_Cmd))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = FBL_vRead_OTP_Cmd &rArr; FBL_vUartWriteData &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+</UL>
+<BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Unlock
+<LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
+<LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartWriteData
+<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendNack
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendAck
+<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
+</UL>
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
-<P><STRONG><a name="[8e]"></a>FBL_vRead_Sector_ProtectionStatus_Cmd</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, main.o(i.FBL_vRead_Sector_ProtectionStatus_Cmd))
+<P><STRONG><a name="[8f]"></a>FBL_vRead_Sector_ProtectionStatus_Cmd</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, main.o(i.FBL_vRead_Sector_ProtectionStatus_Cmd))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = FBL_vRead_Sector_ProtectionStatus_Cmd &rArr; FBL_vUartWriteData &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartWriteData
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendNack
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vSendAck
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucVerifyCRC
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
-<P><STRONG><a name="[8f]"></a>FBL_vRw_ProtectionStatus</STRONG> (Thumb, 26 bytes, Stack size 32 bytes, main.o(i.FBL_vRw_ProtectionStatus))
+<P><STRONG><a name="[90]"></a>FBL_vRw_ProtectionStatus</STRONG> (Thumb, 26 bytes, Stack size 32 bytes, main.o(i.FBL_vRw_ProtectionStatus))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = FBL_vRw_ProtectionStatus &rArr; HAL_FLASHEx_OBGetConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_OB_Unlock
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
 </UL>
 
 <P><STRONG><a name="[7a]"></a>FBL_vSendAck</STRONG> (Thumb, 30 bytes, Stack size 16 bytes, main.o(i.FBL_vSendAck))
@@ -749,7 +759,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -766,7 +777,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -778,13 +790,13 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vDisable_RW_Protect_Cmd
 </UL>
 
-<P><STRONG><a name="[91]"></a>FBL_vUartReadData</STRONG> (Thumb, 218 bytes, Stack size 0 bytes, main.o(i.FBL_vUartReadData))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = FBL_vUartReadData &rArr; FBL_vFlashErase_Cmd &rArr; FBL_vUartWriteData &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[92]"></a>FBL_vUartReadData</STRONG> (Thumb, 218 bytes, Stack size 0 bytes, main.o(i.FBL_vUartReadData))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = FBL_vUartReadData &rArr; FBL_vRead_OTP_Cmd &rArr; FBL_vUartWriteData &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
-<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_MemoryCmd
+<BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
+<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_MemoryCmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -794,7 +806,7 @@ Global Symbols
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vEnable_RW_Protect_Cmd
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vDisable_RW_Protect_Cmd
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -804,7 +816,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_Sector_ProtectionStatus_Cmd
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vMemoryWrite_Cmd
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGoToAddress_Cmd
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vGetVersion_Cmd
@@ -870,7 +883,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
 </UL>
 
-<P><STRONG><a name="[90]"></a>HAL_FLASHEx_OBGetConfig</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, stm32f4xx_hal_flash_ex.o(i.HAL_FLASHEx_OBGetConfig))
+<P><STRONG><a name="[91]"></a>HAL_FLASHEx_OBGetConfig</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, stm32f4xx_hal_flash_ex.o(i.HAL_FLASHEx_OBGetConfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = HAL_FLASHEx_OBGetConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_OB_GetWRP
@@ -878,11 +891,12 @@ Global Symbols
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_OB_GetRDP
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_OB_GetBOR
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
+<BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
 </UL>
 
 <P><STRONG><a name="[77]"></a>HAL_FLASH_Lock</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, stm32f4xx_hal_flash.o(i.HAL_FLASH_Lock))
-<BR><BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
+<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucExecute_MemoryWrite
 </UL>
@@ -892,7 +906,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[72]"></a>HAL_FLASH_OB_Unlock</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, stm32f4xx_hal_flash.o(i.HAL_FLASH_OB_Unlock))
-<BR><BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
+<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRw_ProtectionStatus
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_Modify_RW_Protection
 </UL>
 
@@ -909,7 +923,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[75]"></a>HAL_FLASH_Unlock</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, stm32f4xx_hal_flash.o(i.HAL_FLASH_Unlock))
-<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
+<BR><BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vRead_OTP_Cmd
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vFlashErase_Cmd
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_ucExecute_MemoryWrite
 </UL>
 
@@ -929,7 +944,7 @@ Global Symbols
 
 <P><STRONG><a name="[97]"></a>HAL_GetTick</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f4xx_hal.o(i.HAL_GetTick))
 <BR><BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -987,7 +1002,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_EnableIRQ
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_HCD_Init
 </UL>
@@ -1017,7 +1032,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_I2C_MspInit &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_I2C_Init
 </UL>
@@ -1130,7 +1145,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_SPI_MspInit &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_Init
 </UL>
@@ -1157,18 +1172,18 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_UART_MspInit &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 </UL>
 
-<P><STRONG><a name="[93]"></a>HAL_UART_Receive</STRONG> (Thumb, 222 bytes, Stack size 32 bytes, stm32f4xx_hal_uart.o(i.HAL_UART_Receive))
+<P><STRONG><a name="[94]"></a>HAL_UART_Receive</STRONG> (Thumb, 222 bytes, Stack size 32 bytes, stm32f4xx_hal_uart.o(i.HAL_UART_Receive))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_UART_Receive &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 </UL>
 
 <P><STRONG><a name="[8d]"></a>HAL_UART_Transmit</STRONG> (Thumb, 214 bytes, Stack size 32 bytes, stm32f4xx_hal_uart.o(i.HAL_UART_Transmit))
@@ -1218,7 +1233,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Error_Handler
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1337,7 +1352,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FBL_vUartReadData
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USB_OTG_FS_HCD_Init
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART3_UART_Init
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART2_UART_Init
@@ -1377,7 +1392,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1454,19 +1469,19 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[a2]"></a>FLASH_OB_GetBOR</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_flash_ex.o(i.FLASH_OB_GetBOR))
-<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
+<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
 </UL>
 
 <P><STRONG><a name="[a0]"></a>FLASH_OB_GetRDP</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, stm32f4xx_hal_flash_ex.o(i.FLASH_OB_GetRDP))
-<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
+<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
 </UL>
 
 <P><STRONG><a name="[a1]"></a>FLASH_OB_GetUser</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_flash_ex.o(i.FLASH_OB_GetUser))
-<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
+<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
 </UL>
 
 <P><STRONG><a name="[9f]"></a>FLASH_OB_GetWRP</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f4xx_hal_flash_ex.o(i.FLASH_OB_GetWRP))
-<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
+<BR><BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_OBGetConfig
 </UL>
 
 <P><STRONG><a name="[c4]"></a>__NVIC_GetPriorityGrouping</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_cortex.o(i.__NVIC_GetPriorityGrouping))
@@ -1495,7 +1510,7 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
 </UL>
 
 <P><STRONG><a name="[af]"></a>HCD_HC_IN_IRQHandler</STRONG> (Thumb, 1392 bytes, Stack size 32 bytes, stm32f4xx_hal_hcd.o(i.HCD_HC_IN_IRQHandler))
