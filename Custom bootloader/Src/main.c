@@ -1147,8 +1147,10 @@ void FBL_vMemoryWrite_Cmd(uint8_t *puc8RxBuffer)
 /*
 *
 * \brief  Handler function for modify read/write protection command. 
-*	\param 
-* \return	
+*	\param  uint8_t u8Sectors: each bit represents a flash memory sector
+*	\param  uint8_t u8ProtectionMode: 0 or 1. Decides the protection mode, the value is written in SPRMOD register 
+*	\param  uint8_t uc8EN: keeps a flag value in order to enable or disable R/W protection
+* \return	FBL_GENERIC_NO_ERROR or FBL_GENERIC_ERROR
 *
 */
 uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, uint8_t uc8EN)
@@ -1167,7 +1169,7 @@ uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, ui
 
 				while(__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
 				 /*
-					Set SPRMOD to 1.
+					Set SPRMOD to 0.
 			  */
 				*pulOPTCR &= ~(1 << 31); // default value is  0x0FFF AAED
 			  *pulOPTCR &= ~ (u8Sectors << 16);
@@ -1231,9 +1233,9 @@ uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, ui
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Handler function for enable write and read protection command.
+*	\param 	uint8_t *puc8RxBuffer: incoming command buffer. 
+* \return	-
 *
 */
 
@@ -1268,9 +1270,9 @@ void FBL_vEnable_RW_Protect_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief  
-*	\param 
-* \return	
+* \brief  Handler function for read protection status command.
+*	\param  uint8_t *pucBuffer: input buffer that contains data to be write to memory.
+* \return	-
 *
 */
 
@@ -1333,7 +1335,7 @@ uint16_t FBL_vRw_ProtectionStatus(void)
 /*
 *
 * \brief Handler function for read protection status command.
-*	\param uint8_t *pucBuffer: input buffer that contains data to be write to memory.
+*	\param uint8_t *puc8RxBuffer: incoming command buffer. 
 * \return	-
 *
 */
@@ -1371,16 +1373,51 @@ void FBL_vRead_Sector_ProtectionStatus_Cmd(uint8_t *puc8RxBuffer)
 /*****************************************START DECLARE MEMORY READ OTP FUNCTIONS *******************************************************/
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Handler function for read OTP register command.
+*	\param uint8_t *puc8RxBuffer: incoming command buffer. 
+* \return	-
 *
 */
 
 void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 {
 	
-	
+	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	volatile uint32_t *pulOPT_Base = (uint32_t*) 0x1FFF7800;
+  uint32_t ulOTP_DataSetValue;
+	uint8_t  aucOTP_DataSetBytes[4];
+	uint8_t  ucSizeOfDataSet = sizeof(aucOTP_DataSetBytes);
+	ulLength = puc8RxBuffer[0] + 1;
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		 FBL_vSendAck(ucSizeOfDataSet);
+		 
+		 HAL_FLASH_Unlock();
+		
+		 for(uint16_t usI =1; usI <= 512; usI++)
+		 {
+			
+				ulOTP_DataSetValue = (uint32_t) (*pulOPT_Base);
+				pulOPT_Base = pulOPT_Base + 4;
+				for (uint8_t ucJ = 0; ucJ <= 3; ucJ++)
+			  {
+					aucOTP_DataSetBytes[ucJ] = (uint8_t) (ulOTP_DataSetValue >> (ucJ * 8)) & 0x000000FF;
+			  }
+				
+				FBL_vUartWriteData(aucOTP_DataSetBytes,ucSizeOfDataSet);
+
+		 }
+		
+		 HAL_FLASH_Lock();
+		
+	}
+	else
+	{
+		FBL_vSendNack();	
+	}
 	
 	
 }
@@ -1391,24 +1428,24 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Handler function for read flash memory command.
+*	\param uint8_t *puc8RxBuffer: incoming command buffer. 
+* \return	-
 *
 */void FBL_vRead_MemoryCmd(uint8_t *puc8RxBuffer)
 {
 	
 	
-	
+	/* not supported yet */
 	
 }
 /*****************************************STOP DECLARE MEMORY READ FUNCTIONS *******************************************************/
 
 /*
 *
-* \brief 
-*	\param 
-* \return	
+* \brief Main handler function of the bootloader.
+*	\param -
+* \return	-
 *
 */
 void FBL_vUartReadData(void)
