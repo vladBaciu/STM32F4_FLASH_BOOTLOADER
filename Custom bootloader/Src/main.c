@@ -82,6 +82,7 @@ HCD_HandleTypeDef hhcd_USB_OTG_FS;
 uint8_t auc8UartRxBuffer[FBL_UART_RX_LEN];
 
 uint8_t aucSupportedCommands[] = {
+															 FBL_FLASH_BINARY_FILE,
                                FBL_GET_VER ,
                                FBL_GET_HELP,
                                FBL_GET_CID,
@@ -89,7 +90,11 @@ uint8_t aucSupportedCommands[] = {
                                FBL_GO_TO_ADDR,
                                FBL_FLASH_ERASE,
                                FBL_MEM_WRITE,
-                               FBL_READ_SECTOR_P_STATUS} ;
+															 FBL_EN_RW_PROTECT,
+														   FBL_MEM_READ,
+                               FBL_READ_SECTOR_P_STATUS,
+															 FBL_OTP_READ,
+															 FBL_DIS_R_W_PROTECT} ;
 
 /* USER CODE END PV */
 
@@ -108,6 +113,7 @@ uint16_t FBL_Get_Mcu_ID(void);
 uint8_t FBL_Get_RDP(void);
 uint16_t FBL_Verify_Address(uint32_t ulAddress);
 uint8_t FBL_ucExecute_MemoryWrite(uint8_t *pucBuffer, uint32_t ulAddress, uint32_t ulLen);
+uint8_t FBL_ucExecute_MemoryRead(uint32_t ulAddress, uint8_t ucLen);
 uint8_t FBL_Modify_RW_Protection(uint8_t u8Sectors, uint8_t u8ProtectionMode, uint8_t uc8EN);
 uint16_t FBL_vRw_ProtectionStatus(void);															 
 /* USER CODE END PFP */
@@ -1413,7 +1419,7 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 		if (ucFlag == 0)
 		{
 		 FBL_vSendAck(0xFF);
-		 HAL_FLASH_Unlock();
+		 //HAL_FLASH_Unlock();
 		
 		 for(uint8_t usI =1; usI <= 0x40; usI++)
 		 {
@@ -1429,7 +1435,7 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 
 		 }
 		
-		 HAL_FLASH_Lock();
+		// HAL_FLASH_Lock();
 	 }
 	 else
 	 {
@@ -1452,13 +1458,98 @@ void FBL_vRead_OTP_Cmd(uint8_t *puc8RxBuffer)
 
 /*
 *
+* \brief Performs a flash memory read.
+*	\param uint32_t ulAddress: first address to be read
+*	\param uint8_t ulLen: bytes to be read
+* \return	Status of read operation.
+*
+*/
+uint8_t FBL_ucExecute_MemoryRead(uint32_t ulAddress, uint8_t ucLen)
+{
+	uint8_t ucReturnValue = FBL_GENERIC_NO_ERROR;
+	uint8_t ucDataLength;
+	volatile uint32_t *pulAddress = (uint32_t*) ulAddress;
+	ucDataLength = ucLen * 4;
+	uint8_t aucData[ucDataLength];
+	memset( aucData, 0, ucDataLength*sizeof(uint8_t) );
+	//HAL_FLASH_Unlock();
+
+  for(uint32_t ulI = 0 ; ulI < ucLen; ulI++)
+  {
+		  /* Read 4 bytes each for iteration */
+			/* Byte 0 */
+      *(aucData + 4* ulI + 0) = (uint8_t) ((*pulAddress) & 0x000000FF);
+		  /* Byte 1 */
+		  *(aucData + 4* ulI + 1)= (uint8_t) ((*pulAddress >> 8) & 0x000000FF);
+			/* Byte 2 */
+		  *(aucData + 4* ulI + 2) = (uint8_t) ((*pulAddress >> 16) & 0x000000FF);
+		  /* Byte 3 */
+		  *(aucData + 4* ulI + 3) = (uint8_t) ((*pulAddress >> 24) & 0x000000FF);
+		
+			pulAddress++;
+        
+  }
+	FBL_vUartWriteData(aucData,ucLen * 4);
+  //HAL_FLASH_Lock();
+	
+	return ucReturnValue;
+}
+
+/*
+*
 * \brief Handler function for read flash memory command.
 *	\param uint8_t *puc8RxBuffer: incoming command buffer. 
 * \return	-
 *
 */void FBL_vRead_MemoryCmd(uint8_t *puc8RxBuffer)
 {
+		
+	uint8_t ucReturnValue;
+	uint32_t ulLength;
+	uint32_t ulCRCHost;
+	uint32_t ulMemoryAddress;
+	uint8_t ucLengthToRead;
 	
+	/* 
+		Get length and add 1 to include the total length computed by CRC 
+	*/
+	ulLength = puc8RxBuffer[0] + 1;
+	/* 
+		Get CRC position from rx command. Position to the end of the command puc8RxBuffer + ulLength 
+		and then subtract 4 because CRC represents the last 4 bytes in the command
+	*/
+	ulCRCHost = *((uint32_t *)(puc8RxBuffer + ulLength - 4));
+	/* 
+		Get the base memory address
+	*/
+	ulMemoryAddress = *((uint32_t *)(&puc8RxBuffer[2]));
+	/* 
+		Get the length to be read
+	*/
+	ucLengthToRead = puc8RxBuffer[6];
+	if(FBL_ucVerifyCRC(&puc8RxBuffer[0], ulLength-4,ulCRCHost) == FBL_CRC_SUCCESS)
+	{
+		FBL_vSendAck(ucLengthToRead * 4);
+		/*
+			Check the validity of the base memory address
+		*/
+		if(FBL_Verify_Address(ulMemoryAddress) == FBL_ADDRESS_VALID)
+		{
+		 
+		 ucReturnValue = FBL_ucExecute_MemoryRead(ulMemoryAddress,ucLengthToRead);
+		
+		}
+		else
+		{
+			ucReturnValue = FBL_ADDRESS_INVALID;
+		}
+		
+		FBL_vUartWriteData((uint8_t *)&ucReturnValue, 1);
+	}
+	else
+	{
+		FBL_vSendNack();
+	}
 	
 	/* not supported yet */
 	
